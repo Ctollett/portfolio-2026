@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@source "../components";
+@source "../app";
+
+/* Font Declarations */
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('/fonts/PPNeueMontreal-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('/fonts/PPNeueMontreal-Book.otf') format('opentype');
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('/fonts/PPNeueMontreal-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Editorial New';
+  src: url('/fonts/PPEditorialNew-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Editorial New';
+  src: url('/fonts/PPEditorialNew-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Design System - Tailwind v4 Theme */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors */
+  --color-bg: #E5E1DD;
+  --color-primary: #000000;
+  --color-accent: #0059FF;
+  --color-secondary: #555559;
+  --color-muted: #BABABA;
+  --color-white: #FFFFFF;
+
+  /* Fonts */
+  --font-sans: 'PP Neue Montreal', system-ui, sans-serif;
+  --font-display: 'PP Editorial New', Georgia, serif;
+
+  /* Font Sizes */
+  --text-xs: 8px;
+  --text-sm: 12px;
+  --text-base: 16px;
+  --text-lg: 24px;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.04em;
+  --tracking-normal: 0;
+
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.5;
+  --leading-snug: 1.67;
+  --leading-normal: 2;
+  --leading-relaxed: 2.25;
+  --leading-loose: 2.5;
+
+  /* Spacing (use as gap-1, p-2, m-3, etc.) */
+  --spacing-1: 10px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-5: 48px;
+  --spacing-6: 64px;
+  --spacing-7: 84px;
+  --spacing-8: 124px;
+
+  /* Border Radius (use as rounded-sm, rounded-md, etc.) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scrollbar-gutter: stable;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-primary);
+  font-family: var(--font-sans);
 }
