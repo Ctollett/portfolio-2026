@@ -76,7 +76,8 @@
   --leading-relaxed: 2.25;
   --leading-loose: 2.5;
 
-  /* Spacing (use as gap-1, p-2, m-3, etc.) */
+  /* Spacing (use as gap-0, gap-1, p-2, m-3, etc.) */
+  --spacing-0: 8px;
   --spacing-1: 10px;
   --spacing-2: 16px;
   --spacing-3: 24px;

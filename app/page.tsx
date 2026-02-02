@@ -1,6 +1,4 @@
 import {
-  Navigation,
-  Header,
   ProjectSection,
   FeaturesSection,
   ConnectSection,
@@ -11,6 +9,7 @@ export default function Home() {
     <main className="flex flex-col gap-6">
       <ProjectSection />
       <FeaturesSection />
+      <ConnectSection />
     </main>
   );
 }

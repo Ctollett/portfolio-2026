@@ -1,3 +1,9 @@
+import { WritingSection } from "@/components";
+
 export default function WritingPage() {
-  return <main>Writing</main>;
+  return (
+    <main>
+      <WritingSection />
+    </main>
+  );
 }

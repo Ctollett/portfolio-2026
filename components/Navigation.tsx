@@ -1,9 +1,12 @@
 'use client';
-
+import { m } from 'framer-motion'
+import { fadeUpWithDelay } from '@/lib/motion'
 import Link from 'next/link';
 import ThemeToggle from "./ThemeToggle";
+import { usePathname } from 'next/navigation';
 
 export default function Navigation() {
+  const pathname = usePathname();
 
   const navItems =
   [
@@ -13,12 +16,24 @@ export default function Navigation() {
     { id: 4, label: 'About', link: '/about'},
    ]
 
+  const isActive = (link: string) => pathname === link;
+  const primaryColor = '#000000';
+  const mutedColor = '#BABABA';
+
   return (
-    <nav className="flex flex-row justify-between items-center w-[100%]">
+    <m.nav variants={fadeUpWithDelay(0.3)} initial="hidden" animate="visible" className="flex flex-row justify-between items-center w-[100%]">
       <ul className="flex flex-row gap-3 text-base font-sans">
         {navItems.map((item) => (
         <li key={item.id}>
-            <Link href={item.link}>{item.label}</Link>
+            <Link href={item.link}>
+              <m.span
+                style={{ color: isActive(item.link) ? primaryColor : mutedColor }}
+                whileHover={isActive(item.link) ? {} : { color: primaryColor }}
+                transition={{ duration: 0.2 }}
+              >
+                {item.label}
+              </m.span>
+            </Link>
           </li>
 
         ))}
@@ -26,6 +41,6 @@ export default function Navigation() {
           <div>
         <div className="flex"><ThemeToggle/></div>
       </div>
-    </nav>
+    </m.nav>
   );
 }

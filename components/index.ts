@@ -10,3 +10,7 @@ export { default as ThemeToggle } from './ThemeToggle';
 export { default as MotionProvider } from './MotionProvider';
 export { default as LabSection } from './LabSection';
 export { default as LabEntry } from './LabEntry';
+export { default as WritingSection } from './WritingSection';
+export { default as WritingEntry } from './WritingEntry';
+export { default as AboutSection } from './AboutSection';
+
