@@ -1,12 +1,28 @@
 'use client';
+import { useEffect } from 'react';
 import { m } from 'framer-motion'
 import { fadeUpWithDelay } from '@/lib/motion'
 import { useAnimation } from '@/lib/animationContext';
+import { useLabFocus } from '@/lib/labFocusContext';
 
 export default function Header() {
-const { hasAnimated } = useAnimation();
+const { hasAnimated, setHasAnimated } = useAnimation();
+const { isLabFocused } = useLabFocus();
+
+  useEffect(() => {
+    if (!hasAnimated) {
+      const timer = setTimeout(() => setHasAnimated(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [hasAnimated, setHasAnimated]);
   return (
-  <m.header variants={fadeUpWithDelay(0)} initial="hidden" animate="visible">
+  <m.header
+    variants={fadeUpWithDelay(0)}
+    initial="hidden"
+    animate={isLabFocused ? { opacity: 0, y: -20 } : "visible"}
+    transition={{ duration: 0.3 }}
+    style={{ pointerEvents: isLabFocused ? 'none' : 'auto' }}
+  >
     <div className="flex flex-col gap-3">
       <div className="">
        <img src="/vectors/logo-group.svg" alt="Logo" />

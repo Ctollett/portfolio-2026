@@ -1,26 +1,63 @@
-export const labItems = [
-  {
-    id: 1,
-    number: '001',
-    title: 'Lab Item',
-    description: 'Description here',
-    date: '10.1.2026',
-    thumbnail: '/images/lab/raycast.webp',
-  },
-  {
-    id: 2,
-    number: '002',
-    title: 'Lab Item',
-    description: 'Description here',
-    date: '10.1.2026',
-    thumbnail: '/images/lab/raycast.webp',
-  },
-  {
-    id: 3,
-    number: '003',
-    title: 'Lab Item',
-    description: 'Description here',
-    date: '10.1.2026',
-    thumbnail: '/images/lab/raycast.webp',
-  },
+const LAB_BASE_URL = 'https://design-lab-lilac.vercel.app'
+
+export interface LabItem {
+  id: number
+  number: string
+  slug: string
+  title: string
+  description: string
+  date: string
+  iframeUrl: string
+  codeUrl: string
+  previewVideo?: string
+  posterImage?: string
+}
+
+interface LabManifest {
+  repo: string
+  labs: {
+    slug: string
+    title: string
+    description: string
+    date: string
+    codeFile: string
+    previewVideo?: string
+    posterImage?: string
+  }[]
+}
+
+const LAB_ORDER = [
+  'spacial-filter',
+  'progressive-confidence-agent-tasks',
+  'inline-auto-suggest',
+  'adaptive-knob',
+  'semantic-image-hover'
 ]
+
+export async function getLabItems(): Promise<LabItem[]> {
+  const res = await fetch(`${LAB_BASE_URL}/labs.json`)
+  const data: LabManifest = await res.json()
+
+  const labs = data.labs.map((lab, i) => ({
+    id: i + 1,
+    number: String(i + 1).padStart(3, '0'),
+    slug: lab.slug,
+    title: lab.title,
+    description: lab.description,
+    date: lab.date,
+    iframeUrl: `${LAB_BASE_URL}/${lab.slug}`,
+    codeUrl: `https://raw.githubusercontent.com/${data.repo}/main/${lab.codeFile}`,
+    previewVideo: lab.previewVideo ? `${LAB_BASE_URL}${lab.previewVideo}` : undefined,
+    posterImage: lab.posterImage ? `${LAB_BASE_URL}${lab.posterImage}` : undefined
+  }))
+
+  // Sort by custom order
+  return labs.sort((a, b) => {
+    const aIndex = LAB_ORDER.indexOf(a.slug)
+    const bIndex = LAB_ORDER.indexOf(b.slug)
+    // Items not in LAB_ORDER go to the end
+    if (aIndex === -1) return 1
+    if (bIndex === -1) return -1
+    return aIndex - bIndex
+  })
+}

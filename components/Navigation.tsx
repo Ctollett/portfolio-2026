@@ -4,9 +4,11 @@ import { fadeUpWithDelay } from '@/lib/motion'
 import Link from 'next/link';
 import ThemeToggle from "./ThemeToggle";
 import { usePathname } from 'next/navigation';
+import { useLabFocus } from '@/lib/labFocusContext';
 
 export default function Navigation() {
   const pathname = usePathname();
+  const { isLabFocused } = useLabFocus();
 
   const navItems =
   [
@@ -21,7 +23,14 @@ export default function Navigation() {
   const mutedColor = '#BABABA';
 
   return (
-    <m.nav variants={fadeUpWithDelay(0.3)} initial="hidden" animate="visible" className="flex flex-row justify-between items-center w-[100%]">
+    <m.nav
+      variants={fadeUpWithDelay(0.3)}
+      initial="hidden"
+      animate={isLabFocused ? { opacity: 0, y: -20 } : "visible"}
+      transition={{ duration: 0.3 }}
+      style={{ pointerEvents: isLabFocused ? 'none' : 'auto' }}
+      className="flex flex-row justify-between items-center w-[100%]"
+    >
       <ul className="flex flex-row gap-3 text-base font-sans">
         {navItems.map((item) => (
         <li key={item.id}>
