@@ -27,11 +27,23 @@ interface LabManifest {
 }
 
 const LAB_ORDER = [
-  'spacial-filter',
-  'progressive-confidence-agent-tasks',
-  'inline-auto-suggest',
-  'adaptive-knob',
-  'semantic-image-hover'
+  'dot-grid',
+  'card-lift',
+  'image-cube',
+  '3d-carousel',
+  'pull-up-footer',
+  'parallax-lens',
+  'card-shelf',
+  'infinite-canvas',
+  'marginalia',
+  'ruun-showcase',
+  'single-card-image-focus',
+  'spatial-scrubber',
+  'font-flare',
+  'command-menu',
+  'dropdown-menu',
+  'image-filter',
+  'velocity-stepper',
 ]
 
 export async function getLabItems(): Promise<LabItem[]> {
