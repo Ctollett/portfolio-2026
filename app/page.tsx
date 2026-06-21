@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { m } from "framer-motion";
 import { CardCarousel } from "@/components/CardCarousel";
 import type { CarouselCard } from "@/components/CardCarousel";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -51,14 +52,25 @@ export default function Home() {
           alignItems: "center",
           padding: "32px 32px",
         }}>
-          <svg width="28" height="20" viewBox="0 0 29 21" fill="none">
-            <path d="M8.47189 9.49798H0.5C0.5 9.49798 0.817269 1.26634 9.5 0.5V8.86104C9.5 8.86104 9.32329 9.4353 8.47189 9.5V9.49798Z" stroke="#000000" strokeMiterlimit="10"/>
-            <path d="M8.47189 11.5H0.5C0.5 11.5 0.817269 19.7342 9.5 20.5V12.1378C9.5 12.1378 9.32329 11.563 8.47189 11.5Z" stroke="#000000" strokeMiterlimit="10"/>
-            <path d="M16 20.5C18.4853 20.5 20.5 18.4853 20.5 16C20.5 13.5147 18.4853 11.5 16 11.5C13.5147 11.5 11.5 13.5147 11.5 16C11.5 18.4853 13.5147 20.5 16 20.5Z" stroke="#000000" strokeMiterlimit="10"/>
-            <path d="M17.5964 0.5H14.4036C12.8 0.5 11.5 1.79996 11.5 3.40355V6.59645C11.5 8.20003 12.8 9.5 14.4036 9.5H17.5964C19.2 9.5 20.5 8.20003 20.5 6.59645V3.40355C20.5 1.79996 19.2 0.5 17.5964 0.5Z" stroke="#000000" strokeMiterlimit="10"/>
-          </svg>
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.55, delay: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
+          >
+            <svg width="28" height="20" viewBox="0 0 29 21" fill="none">
+              <path d="M8.47189 9.49798H0.5C0.5 9.49798 0.817269 1.26634 9.5 0.5V8.86104C9.5 8.86104 9.32329 9.4353 8.47189 9.5V9.49798Z" stroke="#000000" strokeMiterlimit="10"/>
+              <path d="M8.47189 11.5H0.5C0.5 11.5 0.817269 19.7342 9.5 20.5V12.1378C9.5 12.1378 9.32329 11.563 8.47189 11.5Z" stroke="#000000" strokeMiterlimit="10"/>
+              <path d="M16 20.5C18.4853 20.5 20.5 18.4853 20.5 16C20.5 13.5147 18.4853 11.5 16 11.5C13.5147 11.5 11.5 13.5147 11.5 16C11.5 18.4853 13.5147 20.5 16 20.5Z" stroke="#000000" strokeMiterlimit="10"/>
+              <path d="M17.5964 0.5H14.4036C12.8 0.5 11.5 1.79996 11.5 3.40355V6.59645C11.5 8.20003 12.8 9.5 14.4036 9.5H17.5964C19.2 9.5 20.5 8.20003 20.5 6.59645V3.40355C20.5 1.79996 19.2 0.5 17.5964 0.5Z" stroke="#000000" strokeMiterlimit="10"/>
+            </svg>
+          </m.div>
 
-          <nav style={{ display: "flex", flexDirection: "row", gap: 16 }}>
+          <m.nav
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.55, delay: 0.95, ease: [0.25, 0.1, 0.25, 1] }}
+            style={{ display: "flex", flexDirection: "row", gap: 16 }}
+          >
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.label}
@@ -76,7 +88,7 @@ export default function Home() {
                 {item.label}
               </Link>
             ))}
-          </nav>
+          </m.nav>
         </div>
 
         {/* Body — carousel centered, bio bottom-left, copyright bottom-right */}
@@ -87,12 +99,17 @@ export default function Home() {
         }}>
 
           {/* Left column: name + copyright at bottom */}
-          <div style={{
-            width: 360,
-            display: "flex",
-            flexDirection: "column",
-            padding: "0 32px 32px",
-          }}>
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.55, delay: 0.75, ease: [0.25, 0.1, 0.25, 1] }}
+            style={{
+              width: 360,
+              display: "flex",
+              flexDirection: "column",
+              padding: "0 32px 32px",
+            }}
+          >
             <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
               <ScrollCue totalCards={WORK_CARDS.length} />
             </div>
@@ -108,7 +125,7 @@ export default function Home() {
               </p>
               <ThemeToggle onToggle={() => setDark(d => !d)} />
             </div>
-          </div>
+          </m.div>
 
           {/* Middle column: carousel */}
           <div style={{ flex: 1, position: "relative" }}>
@@ -116,13 +133,18 @@ export default function Home() {
           </div>
 
           {/* Right column: social links + email pinned to bottom */}
-          <div style={{
-            width: 360,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            padding: "0 32px 32px",
-          }}>
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.55, delay: 0.85, ease: [0.25, 0.1, 0.25, 1] }}
+            style={{
+              width: 360,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              padding: "0 32px 32px",
+            }}
+          >
             <div style={{ display: "flex", flexDirection: "row", alignItems: "flex-end", justifyContent: "flex-end", gap: 24 }}>
 
               {/* Social links stack */}
@@ -171,7 +193,7 @@ export default function Home() {
               </a>
 
             </div>
-          </div>
+          </m.div>
 
         </div>
 

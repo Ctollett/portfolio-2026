@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import { m } from "framer-motion";
 import type { RefObject } from "react";
 import type * as THREE from "three";
 
@@ -459,23 +460,31 @@ export function CardCarousel({
 
   return (
     <>
-      <canvas
+      <m.canvas
         ref={canvasRef}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
         style={{ position: "fixed", top: 0, left: 0, zIndex: 2, pointerEvents: "none" }}
       />
 
       {/* Title — sibling of canvas so zIndex works above WebGL */}
-      <div style={{
-        position: "fixed",
-        top: "50%",
-        left: 0,
-        width: `calc(50vw - ${CARD_W / 2}px)`,
-        transform: "translateY(-50%)",
-        display: "flex",
-        justifyContent: "center",
-        pointerEvents: "none",
-        zIndex: 3,
-      }}>
+      <m.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: 0,
+          width: `calc(50vw - ${CARD_W / 2}px)`,
+          transform: "translateY(-50%)",
+          display: "flex",
+          justifyContent: "center",
+          pointerEvents: "none",
+          zIndex: 3,
+        }}
+      >
         <span ref={titleRef} style={{
           fontFamily: "'Canela', serif",
           fontSize: 40,
@@ -485,23 +494,28 @@ export function CardCarousel({
         }}>
           {cards[0].title}
         </span>
-      </div>
+      </m.div>
 
       {/* Year + desc — sibling of canvas so zIndex works above WebGL */}
-      <div style={{
-        position: "fixed",
-        top: "50%",
-        left: `calc(50vw + ${CARD_W / 2}px)`,
-        right: 0,
-        transform: "translateY(-50%)",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "baseline",
-        gap: 12,
-        pointerEvents: "none",
-        zIndex: 3,
-      }}>
+      <m.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: `calc(50vw + ${CARD_W / 2}px)`,
+          right: 0,
+          transform: "translateY(-50%)",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "baseline",
+          gap: 12,
+          pointerEvents: "none",
+          zIndex: 3,
+        }}
+      >
         <span ref={yearRef} style={{
           fontFamily: "'MDUIXS', sans-serif",
           fontSize: 14,
@@ -520,7 +534,7 @@ export function CardCarousel({
         }}>
           {cards[0].body ?? ""}
         </span>
-      </div>
+      </m.div>
 
       <div style={{
         position: "fixed",

@@ -24,7 +24,20 @@ export default function LabPage() {
         display: 'flex',
         flexDirection: 'column',
       }}>
+        <div style={{ position: 'relative' }}>
+          {/* Gradual blur backdrop — masked so blur fades toward bottom */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            background: 'linear-gradient(to bottom, rgba(244,242,237,0.65) 0%, transparent 100%)',
+            maskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)',
+            pointerEvents: 'none',
+          }} />
         <div style={{
+          position: 'relative',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -58,6 +71,7 @@ export default function LabPage() {
               </Link>
             ))}
           </nav>
+        </div>
         </div>
       </div>
 
