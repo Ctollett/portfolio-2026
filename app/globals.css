@@ -71,7 +71,7 @@
 /* Design System - Tailwind v4 Theme */
 @theme inline {
   /* Colors */
-  --color-bg: #E5E1DD;
+  --color-bg: #F4F2ED;
   --color-primary: #000000;
   --color-accent: #0059FF;
   --color-secondary: #555559;
@@ -120,7 +120,13 @@
 
 html {
   scrollbar-gutter: stable;
-  background: #E5E1DD;
+  background: #F4F2ED;
+}
+
+html[data-theme="dark"] {
+  background: #111110;
+  --color-bg: #111110;
+  --color-primary: #E8E5E1;
 }
 
 body {

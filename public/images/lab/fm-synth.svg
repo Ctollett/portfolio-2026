@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="576" viewBox="0 0 960 576">
+  <rect width="960" height="576" fill="#C4922A"/>
+
+  <!-- Subtle noise texture via pattern -->
+  <defs>
+    <pattern id="grain" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="none"/>
+      <circle cx="1" cy="1" r="0.4" fill="#FDF5E4" opacity="0.04"/>
+      <circle cx="3" cy="3" r="0.4" fill="#FDF5E4" opacity="0.04"/>
+    </pattern>
+
+    <!-- Clip to card bounds -->
+    <clipPath id="card">
+      <rect width="960" height="576"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background grain -->
+  <rect width="960" height="576" fill="url(#grain)"/>
+
+  <!-- Harmonic sine waves — fundamental and overtones -->
+  <!-- Each wave is a path, overlapping with decreasing opacity -->
+
+  <!-- Fundamental (f1) — full amplitude, centered -->
+  <path d="
+    M 80 288
+    C 120 208, 160 208, 200 288
+    C 240 368, 280 368, 320 288
+    C 360 208, 400 208, 440 288
+    C 480 368, 520 368, 560 288
+    C 600 208, 640 208, 680 288
+    C 720 368, 760 368, 800 288
+    C 840 208, 880 208, 880 288
+  " fill="none" stroke="#FDF5E4" stroke-width="2" opacity="0.85"/>
+
+  <!-- 2nd harmonic (f2) — half amplitude, double frequency -->
+  <path d="
+    M 80 288
+    C 100 248, 120 248, 140 288
+    C 160 328, 180 328, 200 288
+    C 220 248, 240 248, 260 288
+    C 280 328, 300 328, 320 288
+    C 340 248, 360 248, 380 288
+    C 400 328, 420 328, 440 288
+    C 460 248, 480 248, 500 288
+    C 520 328, 540 328, 560 288
+    C 580 248, 600 248, 620 288
+    C 640 328, 660 328, 680 288
+    C 700 248, 720 248, 740 288
+    C 760 328, 780 328, 800 288
+    C 820 248, 840 248, 860 288
+    C 880 328, 900 328, 880 288
+  " fill="none" stroke="#FDF5E4" stroke-width="1.5" opacity="0.45"/>
+
+  <!-- 3rd harmonic (f3) — smaller amplitude, triple frequency -->
+  <path d="
+    M 80 288
+    C 93 261, 107 261, 120 288
+    C 133 315, 147 315, 160 288
+    C 173 261, 187 261, 200 288
+    C 213 315, 227 315, 240 288
+    C 253 261, 267 261, 280 288
+    C 293 315, 307 315, 320 288
+    C 333 261, 347 261, 360 288
+    C 373 315, 387 315, 400 288
+    C 413 261, 427 261, 440 288
+    C 453 315, 467 315, 480 288
+    C 493 261, 507 261, 520 288
+    C 533 315, 547 315, 560 288
+    C 573 261, 587 261, 600 288
+    C 613 315, 627 315, 640 288
+    C 653 261, 667 261, 680 288
+    C 693 315, 707 315, 720 288
+    C 733 261, 747 261, 760 288
+    C 773 315, 787 315, 800 288
+    C 813 261, 827 261, 840 288
+    C 853 315, 867 315, 880 288
+  " fill="none" stroke="#FDF5E4" stroke-width="1" opacity="0.28"/>
+
+  <!-- 4th harmonic -->
+  <path d="
+    M 80 288
+    C 90 268, 100 268, 110 288
+    C 120 308, 130 308, 140 288
+    C 150 268, 160 268, 170 288
+    C 180 308, 190 308, 200 288
+    C 210 268, 220 268, 230 288
+    C 240 308, 250 308, 260 288
+    C 270 268, 280 268, 290 288
+    C 300 308, 310 308, 320 288
+    C 330 268, 340 268, 350 288
+    C 360 308, 370 308, 380 288
+    C 390 268, 400 268, 410 288
+    C 420 308, 430 308, 440 288
+    C 450 268, 460 268, 470 288
+    C 480 308, 490 308, 500 288
+    C 510 268, 520 268, 530 288
+    C 540 308, 550 308, 560 288
+    C 570 268, 580 268, 590 288
+    C 600 308, 610 308, 620 288
+    C 630 268, 640 268, 650 288
+    C 660 308, 670 308, 680 288
+    C 690 268, 700 268, 710 288
+    C 720 308, 730 308, 740 288
+    C 750 268, 760 268, 770 288
+    C 780 308, 790 308, 800 288
+    C 810 268, 820 268, 830 288
+    C 840 308, 850 308, 860 288
+    C 870 268, 880 268, 880 288
+  " fill="none" stroke="#FDF5E4" stroke-width="0.75" opacity="0.18"/>
+
+  <!-- Horizontal center axis (very faint) -->
+  <line x1="80" y1="288" x2="880" y2="288" stroke="#FDF5E4" stroke-width="0.5" opacity="0.12"/>
+
+  <!-- Operator label — top left -->
+  <text x="80" y="96" font-family="'PP Neue Montreal', system-ui, sans-serif" font-size="11" letter-spacing="0.18em" fill="#FDF5E4" opacity="0.55">FM SYNTHESIZER</text>
+
+  <!-- Modulation index indicator — small cross-hair bottom right -->
+  <line x1="826" y1="464" x2="856" y2="464" stroke="#FDF5E4" stroke-width="1" opacity="0.35"/>
+  <line x1="841" y1="449" x2="841" y2="479" stroke="#FDF5E4" stroke-width="1" opacity="0.35"/>
+  <circle cx="841" cy="464" r="5" fill="none" stroke="#FDF5E4" stroke-width="1" opacity="0.35"/>
+
+</svg>

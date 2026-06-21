@@ -1,0 +1,268 @@
+@font-face {
+  font-family: "PPEditorialOld";
+  src: url("/fonts/PPEditorialOld-Ultralight.otf") format("opentype");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "PPEditorialOld";
+  src: url("/fonts/PPEditorialOld-Regular.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "PPFraktionSans";
+  src: url("./PPFraktionSans-Light.otf") format("opentype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "PPFraktionMono";
+  src: url("./PPFraktionMono-Regular.otf") format("opentype");
+  font-weight: 400;
+}
+
+.body {
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 100px 0 400px;
+  color: #1A1714;
+  position: relative;
+  z-index: 1;
+}
+
+.body p {
+  font-family: 'PPEditorialOld', Georgia, serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.9;
+  letter-spacing: 0.01em;
+  color: #2A2420;
+  margin-bottom: 1.8em;
+  margin-top: 0;
+  text-wrap: pretty;
+}
+
+
+.cite {
+  cursor: pointer;
+}
+
+.cornerLabel {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  font-family: var(--font-pp-supply-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #787470;
+  line-height: 1.7;
+  text-align: right;
+}
+
+/* ── Citation Card ── */
+
+
+.stack {
+  position: fixed;
+  bottom: 0;
+  left: calc(50% - 200px);
+  width: 400px;
+  z-index: 10;
+}
+
+.card {
+  position: absolute;
+  bottom: 160px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #181A18;
+  box-shadow:
+    0 8px 15px rgba(0, 0, 0, 0.35),
+    0 4px 8px rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: "PPFraktionMono", monospace;
+}
+
+.cardCount {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-family: var(--font-pp-supply-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 247, 0.3);
+  z-index: 2;
+}
+
+.pageLabel {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  font-family: var(--font-pp-supply-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #787470;
+  line-height: 1.7;
+  pointer-events: none;
+}
+
+.tag {
+  position: absolute;
+  top: -16px;
+  left: 20px;
+  height: 16px;
+  padding: 0 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tagBg {
+  position: absolute;
+  inset: 0 0 -1px 0;
+  background: var(--tag-color, #181A18);
+  border-radius: 8px 8px 0 0;
+}
+
+.tagBg::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 0% 0%, transparent 8px, var(--tag-color, #181A18) 8px);
+}
+
+.tagBg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -8px;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 100% 0%, transparent 8px, var(--tag-color, #181A18) 8px);
+}
+
+
+.tagLabel {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-pp-supply-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 247, 0.45);
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.tag:hover .tagLabel {
+  color: rgba(255, 255, 247, 0.8);
+}
+
+.dots {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 8px);
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+
+
+
+
+.cardTop {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.coverWrapper {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cover {
+  width: 124px;
+  height: 124px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  filter: grayscale(1);
+}
+
+.coverOverlay {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: color;
+  opacity: 1;
+  border-radius: inherit;
+}
+
+.cardMeta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px 0;
+  width: 100%;
+}
+
+.metaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metaLabel {
+  font-size: 4px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 247, 0.3);
+  white-space: nowrap;
+}
+
+.metaValue {
+  font-size: 4px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 247, 0.85);
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.divider {
+  height: 0.5px;
+  background: rgba(255, 255, 247, 0.12);
+}
+
+.quote {
+  font-family: var(--font-pp-supply-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 247, 0.55);
+  line-height: 1.8;
+  align-self: center;
+  text-transform: uppercase;
+}

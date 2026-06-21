@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MotionProvider from "@/components/MotionProvider";
+import GrainOverlay from "@/components/GrainOverlay";
 
 export const metadata: Metadata = {
   title: "Colton Tollett - Design Engineer",
@@ -10,7 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <MotionProvider>
+          {children}
+        </MotionProvider>
+        <GrainOverlay />
       </body>
     </html>
   );

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="576" viewBox="0 0 960 576">
+  <rect width="960" height="576" fill="#3D4A3E"/>
+
+  <defs>
+    <clipPath id="card2">
+      <rect width="960" height="576"/>
+    </clipPath>
+  </defs>
+
+  <!-- Organic blob shape — closed bezier, slightly off-center -->
+  <path d="
+    M 480 168
+    C 578 160, 640 210, 650 288
+    C 660 366, 610 430, 520 445
+    C 430 460, 342 420, 318 352
+    C 294 284, 330 190, 420 168
+    C 440 163, 460 169, 480 168
+    Z
+  " fill="none" stroke="#B8CDB0" stroke-width="1.5" opacity="0.75"/>
+
+  <!-- Second blob state — morphed form, showing transition -->
+  <path d="
+    M 480 152
+    C 590 145, 668 205, 672 300
+    C 676 390, 604 458, 498 462
+    C 392 466, 308 402, 296 316
+    C 284 230, 344 164, 440 150
+    C 452 148, 466 153, 480 152
+    Z
+  " fill="none" stroke="#B8CDB0" stroke-width="1" opacity="0.28" stroke-dasharray="6 4"/>
+
+  <!-- Bezier control handles for the first blob -->
+  <!-- Top anchor point + handles -->
+  <circle cx="480" cy="168" r="4" fill="none" stroke="#B8CDB0" stroke-width="1.5" opacity="0.9"/>
+  <line x1="480" y1="168" x2="578" y2="160" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <line x1="480" y1="168" x2="420" y2="168" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <circle cx="578" cy="160" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+  <circle cx="420" cy="168" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+
+  <!-- Right anchor point + handles -->
+  <circle cx="650" cy="288" r="4" fill="none" stroke="#B8CDB0" stroke-width="1.5" opacity="0.9"/>
+  <line x1="650" y1="288" x2="640" y2="210" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <line x1="650" y1="288" x2="660" y2="366" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <circle cx="640" cy="210" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+  <circle cx="660" cy="366" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+
+  <!-- Bottom anchor point + handles -->
+  <circle cx="520" cy="445" r="4" fill="none" stroke="#B8CDB0" stroke-width="1.5" opacity="0.9"/>
+  <line x1="520" y1="445" x2="610" y2="430" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <line x1="520" y1="445" x2="430" y2="460" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <circle cx="610" cy="430" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+  <circle cx="430" cy="460" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+
+  <!-- Left anchor point + handles -->
+  <circle cx="318" cy="352" r="4" fill="none" stroke="#B8CDB0" stroke-width="1.5" opacity="0.9"/>
+  <line x1="318" y1="352" x2="342" y2="420" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <line x1="318" y1="352" x2="294" y2="284" stroke="#B8CDB0" stroke-width="1" opacity="0.45"/>
+  <circle cx="342" cy="420" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+  <circle cx="294" cy="284" r="2.5" fill="#B8CDB0" opacity="0.6"/>
+
+  <!-- Label -->
+  <text x="80" y="96" font-family="'PP Neue Montreal', system-ui, sans-serif" font-size="11" letter-spacing="0.18em" fill="#B8CDB0" opacity="0.55">SVG MORPH LIBRARY</text>
+
+  <!-- Small path count indicator bottom right -->
+  <text x="826" y="464" font-family="'PP Neue Montreal', system-ui, sans-serif" font-size="9" letter-spacing="0.12em" fill="#B8CDB0" opacity="0.35" text-anchor="middle">6 NODES</text>
+
+</svg>

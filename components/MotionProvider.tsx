@@ -9,7 +9,7 @@ export default function MotionProvider({
   children: React.ReactNode;
 }) {
   return (
-    <LazyMotion features={motionFeatures} strict>
+    <LazyMotion features={motionFeatures}>
       {children}
     </LazyMotion>
   );

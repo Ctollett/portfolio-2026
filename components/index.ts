@@ -13,4 +13,5 @@ export { default as LabEntry } from './LabEntry';
 export { default as WritingSection } from './WritingSection';
 export { default as WritingEntry } from './WritingEntry';
 export { default as AboutSection } from './AboutSection';
+export { default as LabInfiniteCanvas } from './LabInfiniteCanvas';
 

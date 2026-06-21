@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="576" viewBox="0 0 960 576">
+  <rect width="960" height="576" fill="#2C3A4A"/>
+
+  <!-- Frequency spectrum bars — 28 bars across the width -->
+  <!-- Heights simulate a rough bell-curve spectral envelope with natural variation -->
+
+  <!-- Bar data: each bar centered, growing from baseline y=420 upward -->
+  <!-- Baseline y=420, bars grow upward. Heights derived from a realistic spectrum shape. -->
+
+  <!-- Bar width 18, gap 10, total span = 28*(18+10)-10 = 770, start x = (960-770)/2 = 95 -->
+
+  <g fill="#7FB2CC" opacity="0.9">
+    <!-- bar 1 -->  <rect x="95"  y="406" width="18" height="14"  rx="1"/>
+    <!-- bar 2 -->  <rect x="123" y="395" width="18" height="25"  rx="1"/>
+    <!-- bar 3 -->  <rect x="151" y="378" width="18" height="42"  rx="1"/>
+    <!-- bar 4 -->  <rect x="179" y="355" width="18" height="65"  rx="1"/>
+    <!-- bar 5 -->  <rect x="207" y="332" width="18" height="88"  rx="1"/>
+    <!-- bar 6 -->  <rect x="235" y="308" width="18" height="112" rx="1"/>
+    <!-- bar 7 -->  <rect x="263" y="284" width="18" height="136" rx="1"/>
+    <!-- bar 8 -->  <rect x="291" y="260" width="18" height="160" rx="1"/>
+    <!-- bar 9 -->  <rect x="319" y="234" width="18" height="186" rx="1"/>
+    <!-- bar 10 --> <rect x="347" y="210" width="18" height="210" rx="1"/>
+    <!-- bar 11 --> <rect x="375" y="188" width="18" height="232" rx="1"/>
+    <!-- bar 12 --> <rect x="403" y="172" width="18" height="248" rx="1"/>
+    <!-- bar 13 --> <rect x="431" y="164" width="18" height="256" rx="1"/>
+    <!-- bar 14 --> <rect x="459" y="168" width="18" height="252" rx="1"/>
+    <!-- bar 15 --> <rect x="487" y="178" width="18" height="242" rx="1"/>
+    <!-- bar 16 --> <rect x="515" y="196" width="18" height="224" rx="1"/>
+    <!-- bar 17 --> <rect x="543" y="218" width="18" height="202" rx="1"/>
+    <!-- bar 18 --> <rect x="571" y="244" width="18" height="176" rx="1"/>
+    <!-- bar 19 --> <rect x="599" y="268" width="18" height="152" rx="1"/>
+    <!-- bar 20 --> <rect x="627" y="292" width="18" height="128" rx="1"/>
+    <!-- bar 21 --> <rect x="655" y="314" width="18" height="106" rx="1"/>
+    <!-- bar 22 --> <rect x="683" y="336" width="18" height="84"  rx="1"/>
+    <!-- bar 23 --> <rect x="711" y="356" width="18" height="64"  rx="1"/>
+    <!-- bar 24 --> <rect x="739" y="372" width="18" height="48"  rx="1"/>
+    <!-- bar 25 --> <rect x="767" y="386" width="18" height="34"  rx="1"/>
+    <!-- bar 26 --> <rect x="795" y="398" width="18" height="22"  rx="1"/>
+    <!-- bar 27 --> <rect x="823" y="408" width="18" height="12"  rx="1"/>
+    <!-- bar 28 --> <rect x="851" y="412" width="18" height="8"   rx="1"/>
+  </g>
+
+  <!-- Subtle top-of-bar highlights — lighter cap on each bar -->
+  <g fill="#A8D0E6" opacity="0.35">
+    <rect x="95"  y="406" width="18" height="2" rx="1"/>
+    <rect x="123" y="395" width="18" height="2" rx="1"/>
+    <rect x="151" y="378" width="18" height="2" rx="1"/>
+    <rect x="179" y="355" width="18" height="2" rx="1"/>
+    <rect x="207" y="332" width="18" height="2" rx="1"/>
+    <rect x="235" y="308" width="18" height="2" rx="1"/>
+    <rect x="263" y="284" width="18" height="2" rx="1"/>
+    <rect x="291" y="260" width="18" height="2" rx="1"/>
+    <rect x="319" y="234" width="18" height="2" rx="1"/>
+    <rect x="347" y="210" width="18" height="2" rx="1"/>
+    <rect x="375" y="188" width="18" height="2" rx="1"/>
+    <rect x="403" y="172" width="18" height="2" rx="1"/>
+    <rect x="431" y="164" width="18" height="2" rx="1"/>
+    <rect x="459" y="168" width="18" height="2" rx="1"/>
+    <rect x="487" y="178" width="18" height="2" rx="1"/>
+    <rect x="515" y="196" width="18" height="2" rx="1"/>
+    <rect x="543" y="218" width="18" height="2" rx="1"/>
+    <rect x="571" y="244" width="18" height="2" rx="1"/>
+    <rect x="599" y="268" width="18" height="2" rx="1"/>
+    <rect x="627" y="292" width="18" height="2" rx="1"/>
+    <rect x="655" y="314" width="18" height="2" rx="1"/>
+    <rect x="683" y="336" width="18" height="2" rx="1"/>
+    <rect x="711" y="356" width="18" height="2" rx="1"/>
+    <rect x="739" y="372" width="18" height="2" rx="1"/>
+    <rect x="767" y="386" width="18" height="2" rx="1"/>
+    <rect x="795" y="398" width="18" height="2" rx="1"/>
+    <rect x="823" y="408" width="18" height="2" rx="1"/>
+    <rect x="851" y="412" width="18" height="2" rx="1"/>
+  </g>
+
+  <!-- Baseline -->
+  <line x1="80" y1="420" x2="880" y2="420" stroke="#7FB2CC" stroke-width="0.5" opacity="0.2"/>
+
+  <!-- Label -->
+  <text x="80" y="96" font-family="'PP Neue Montreal', system-ui, sans-serif" font-size="11" letter-spacing="0.18em" fill="#7FB2CC" opacity="0.55">WASM DSP ENGINE</text>
+
+  <!-- Hz marker bottom right -->
+  <text x="848" y="458" font-family="'PP Neue Montreal', system-ui, sans-serif" font-size="9" letter-spacing="0.12em" fill="#7FB2CC" opacity="0.35" text-anchor="end">20 kHz</text>
+  <text x="102" y="458" font-family="'PP Neue Montreal', system-ui, sans-serif" font-size="9" letter-spacing="0.12em" fill="#7FB2CC" opacity="0.35">20 Hz</text>
+
+</svg>
