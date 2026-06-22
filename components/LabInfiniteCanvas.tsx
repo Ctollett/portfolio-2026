@@ -7,7 +7,7 @@ import type * as THREE from 'three';
 import type { LabItem } from '@/lib/lab';
 
 // ── Grid ───────────────────────────────────────────────────────────────────────
-const CARD     = 2.4;
+const CARD     = 2.0;
 const GAP      = 2.4;
 const STRIDE   = CARD + GAP;
 const GRID_N   = 15;
