@@ -501,22 +501,6 @@ export default function LabInfiniteCanvas({ labs }: { labs: LabItem[] }) {
         )}
       </AnimatePresence>
 
-      {/* Corner hint */}
-      <div style={{
-        position: 'fixed',
-        bottom: 20,
-        right: 24,
-        fontFamily: "'MDUIXS', sans-serif",
-        fontSize: 9,
-        letterSpacing: '0.18em',
-        textTransform: 'uppercase',
-        color: '#787470',
-        lineHeight: 1.7,
-        textAlign: 'right',
-        pointerEvents: 'none',
-      }}>
-        Lab<br /><span style={{ opacity: 0.5 }}>Drag · Scroll</span>
-      </div>
     </>
   );
 }

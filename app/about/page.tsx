@@ -116,9 +116,9 @@ export default function AboutPage() {
               Design Engineer
             </p>
             <h1 style={{
-              fontFamily: "'PP Editorial New', serif",
+              fontFamily: "'Canela', serif",
               fontSize: 28,
-              fontWeight: 400,
+              fontWeight: 300,
               fontStyle: "italic",
               color: "#1A1A18",
               margin: 0,
@@ -130,7 +130,7 @@ export default function AboutPage() {
 
           {/* Bio */}
           <p style={{
-            fontFamily: "'PP Neue Montreal', sans-serif",
+            fontFamily: "'MDUIXS', sans-serif",
             fontSize: 13,
             fontWeight: 400,
             lineHeight: 1.85,

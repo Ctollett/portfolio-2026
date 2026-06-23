@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { m } from "framer-motion";
+import { useRouter } from "next/navigation";
 import type { RefObject } from "react";
 import type * as THREE from "three";
 
 export interface CarouselCard {
   src: string;
+  video?: string;
+  slug?: string;
   label: string;
   title: string;
   body?: string;
@@ -205,6 +208,11 @@ const FRAG = /* glsl */`
 
     color = clamp(color + rim, 0.0, 1.0);
 
+    // Subtle inner border — thin ring just inside the card edge
+    float borderW     = 3.0;
+    float borderAlpha = (1.0 - smoothstep(0.0, borderW, rimDist)) * cornerAlpha;
+    color = mix(color, vec3(0.18, 0.18, 0.18), borderAlpha * 0.25);
+
     gl_FragColor = vec4(color, alpha * uOpacity);
   }
 `;
@@ -216,6 +224,8 @@ export function CardCarousel({
   cards: CarouselCard[];
   scrollRef: RefObject<HTMLDivElement | null>;
 }) {
+  const router       = useRouter();
+  const [activeIdx, setActiveIdx] = useState(0);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const outerRefs    = useRef<(HTMLDivElement | null)[]>([]);
   const titleRef    = useRef<HTMLSpanElement>(null);
@@ -275,9 +285,13 @@ export function CardCarousel({
       const loader      = new THREE.TextureLoader();
       const textures:   Record<string, THREE.Texture> = {};
       const texAspects: Record<string, number>        = {};
+      const videoMap    = new Map<string, HTMLVideoElement>();
 
+      const texKey = (c: typeof padded[0]) => c.video ?? c.src;
+
+      // Image textures
       await Promise.all(
-        [...new Set(padded.map((c) => c.src))].map(
+        [...new Set(padded.filter(c => !c.video).map(c => c.src))].map(
           (src) =>
             new Promise<void>((resolve) => {
               loader.load(src, (tex) => {
@@ -288,6 +302,31 @@ export function CardCarousel({
                 texAspects[src] = tex.image.width / tex.image.height;
                 resolve();
               });
+            })
+        )
+      );
+
+      // Video textures
+      await Promise.all(
+        [...new Set(padded.filter(c => !!c.video).map(c => c.video!))].map(
+          (src) =>
+            new Promise<void>((resolve) => {
+              const vid = document.createElement("video");
+              vid.src         = src;
+              vid.muted       = true;
+              vid.loop        = true;
+              vid.playsInline = true;
+              videoMap.set(src, vid);
+              vid.addEventListener("loadedmetadata", () => {
+                const tex = new THREE.VideoTexture(vid);
+                tex.colorSpace = THREE.SRGBColorSpace;
+                tex.minFilter  = THREE.LinearFilter;
+                tex.magFilter  = THREE.LinearFilter;
+                textures[src]   = tex;
+                texAspects[src] = vid.videoWidth / vid.videoHeight;
+                resolve();
+              }, { once: true });
+              vid.load();
             })
         )
       );
@@ -329,12 +368,13 @@ export function CardCarousel({
       });
 
       const meshes = padded.map((card) => {
+        const key = texKey(card);
         const mat = new THREE.ShaderMaterial({
           uniforms: {
-            uTexture:        { value: textures[card.src] },
+            uTexture:        { value: textures[key] },
             uOpacity:        { value: 1.0 },
             uDistFromCenter: { value: 0.0 },
-            uTexAspect:      { value: texAspects[card.src] ?? 1.0 },
+            uTexAspect:      { value: texAspects[key] ?? 1.0 },
           },
           vertexShader:   VERT,
           fragmentShader: FRAG,
@@ -380,9 +420,19 @@ export function CardCarousel({
 
         if (newActive !== lastActive) {
           lastActive = newActive;
+          setActiveIdx(newActive);
           if (titleRef.current) titleRef.current.textContent = cards[newActive].title;
           if (yearRef.current)  yearRef.current.textContent  = cards[newActive].label;
           if (descRef.current)  descRef.current.textContent  = cards[newActive].body ?? "";
+
+          // Play the active card's video, pause all others
+          videoMap.forEach((vid, src) => {
+            if (src === cards[newActive].video) {
+              vid.play().catch(() => {});
+            } else {
+              vid.pause();
+            }
+          });
         }
 
         for (let i = 0; i < padded.length; i++) {
@@ -446,6 +496,7 @@ export function CardCarousel({
       return () => {
         cancelAnimationFrame(rafId);
         lenis.destroy();
+        videoMap.forEach(v => { v.pause(); v.src = ""; v.load(); });
         contactMeshes.forEach(m => m.material.dispose());
         shadowMeshes.forEach(m => m.material.dispose());
         shadowGeometry.dispose();
@@ -535,6 +586,24 @@ export function CardCarousel({
           {cards[0].body ?? ""}
         </span>
       </m.div>
+
+      {/* Center card click target */}
+      {cards[activeIdx]?.slug && (
+        <div
+          onClick={() => router.push(`/work/${cards[activeIdx].slug}`)}
+          style={{
+            position: "fixed",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: CARD_W,
+            height: CARD_H,
+            zIndex: 10,
+            cursor: "pointer",
+            pointerEvents: "auto",
+          }}
+        />
+      )}
 
       <div style={{
         position: "fixed",

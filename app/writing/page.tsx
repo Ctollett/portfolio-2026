@@ -73,6 +73,15 @@ export default function WritingPage() {
       }}>
         <div style={{ width: "100%", maxWidth: 628 }}>
           <WritingSection />
+          <p style={{
+            fontFamily: "'MDUIXS', sans-serif",
+            fontSize: 9,
+            letterSpacing: "0.14em",
+            color: "#888884",
+            margin: "24px 0 0",
+          }}>
+            More content coming soon
+          </p>
         </div>
       </main>
 

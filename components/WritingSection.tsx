@@ -1,5 +1,5 @@
 'use client';
-import { m, number } from 'framer-motion'
+import { m } from 'framer-motion'
 import { fadeInstant } from '@/lib/motion'
 import WritingEntry from "./WritingEntry";
 import { writingItems } from "@/lib/writing";
@@ -10,15 +10,15 @@ export default function WritingSection() {
   return (
     <m.section variants={fadeInstant} initial="hidden" animate="visible" className="flex flex-col gap-4">
       {writingItems.map((item) => (
-        <WritingEntry 
-        key={item.id} 
-        year={item.year} 
-        month={item.month} 
-        excerpt={item.excerpt} 
-        isOtherHovered={hoverId !== null && hoverId !== item.id}
-        onHoverStart={() => setHoverId(item.id)}
-        onHoverEnd={() => setHoverId(null)}
-        
+        <WritingEntry
+          key={item.id}
+          slug={item.slug}
+          year={item.year}
+          month={item.month}
+          excerpt={item.excerpt}
+          isOtherHovered={hoverId !== null && hoverId !== item.id}
+          onHoverStart={() => setHoverId(item.id)}
+          onHoverEnd={() => setHoverId(null)}
         />
       ))}
     </m.section>
