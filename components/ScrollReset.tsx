@@ -1,10 +1,12 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 export function ScrollReset() {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+  const pathname = usePathname()
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [pathname])
   return null
 }

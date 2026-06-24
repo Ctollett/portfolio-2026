@@ -28,13 +28,14 @@ export function WorkLiveLink({ href }: { href: string }) {
         fontFamily: "'MDUIXS', sans-serif",
         fontSize: 12,
         letterSpacing: '0.08em',
+        lineHeight: 1,
         color: '#888884',
       }}>
         View Live Site
       </span>
       <svg
-        width="16"
-        height="16"
+        width="12"
+        height="12"
         viewBox="0 0 24 24"
         fill="none"
         stroke="#888884"

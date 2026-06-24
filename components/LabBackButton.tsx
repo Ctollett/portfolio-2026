@@ -1,11 +1,21 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
+import { morph } from "getruun";
+
+const SPRING         = { stiffness: 320, damping: 22, mass: 1 };
+const CHEVRON        = "M15 18 L9 12 L15 6 M15 18 L9 12 L15 6";
+const CHEVRONS_LEFT  = "M11 17 L6 12 L11 7 M18 17 L13 12 L18 7";
 
 export function LabBackButton() {
+  const pathRef = useRef<SVGPathElement>(null);
+
   return (
     <Link
       href="/lab"
+      onMouseEnter={() => morph(pathRef.current!, CHEVRONS_LEFT, SPRING)}
+      onMouseLeave={() => morph(pathRef.current!, CHEVRON, SPRING)}
       style={{
         position: "fixed",
         top: 32,
@@ -19,21 +29,21 @@ export function LabBackButton() {
       }}
     >
       <svg
-        width="14"
-        height="14"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+        <path ref={pathRef} d={CHEVRON} />
       </svg>
       <span style={{
         fontFamily: "'MDUIXS', sans-serif",
-        fontSize: 10,
-        letterSpacing: "0.14em",
+        fontSize: 12,
+        letterSpacing: "0.08em",
         color: "inherit",
       }}>
         Lab

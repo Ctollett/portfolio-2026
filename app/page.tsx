@@ -26,10 +26,13 @@ export default function Home() {
   const pageRef = useRef<HTMLDivElement>(null);
   const [dark, setDark] = useState(false);
   const pathname = usePathname();
+  const isFirstLoad = typeof window !== 'undefined' && !sessionStorage.getItem('intro-played');
+  const uiDelay = isFirstLoad ? 4.2 : 0.75;
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
   }, [dark]);
+
 
   return (
     <div ref={pageRef} style={{ background: dark ? "#111110" : "#F4F2ED" }}>
@@ -55,7 +58,7 @@ export default function Home() {
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.55, delay: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <svg width="28" height="20" viewBox="0 0 29 21" fill="none">
               <path d="M8.47189 9.49798H0.5C0.5 9.49798 0.817269 1.26634 9.5 0.5V8.86104C9.5 8.86104 9.32329 9.4353 8.47189 9.5V9.49798Z" stroke="#000000" strokeMiterlimit="10"/>
@@ -68,7 +71,7 @@ export default function Home() {
           <m.nav
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.55, delay: 0.95, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
             style={{ display: "flex", flexDirection: "row", gap: 16 }}
           >
             {NAV_ITEMS.map((item) => (
@@ -102,7 +105,7 @@ export default function Home() {
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.55, delay: 0.75, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
             style={{
               width: 360,
               display: "flex",
@@ -136,7 +139,7 @@ export default function Home() {
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.55, delay: 0.85, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
             style={{
               width: 360,
               display: "flex",

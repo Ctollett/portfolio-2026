@@ -169,6 +169,43 @@ export default function AboutPage() {
             <ResumeButton />
           </div>
 
+          {/* Featured */}
+          <div style={{ marginBottom: 32 }}>
+            <p style={{
+              fontFamily: "'MDUIXS', sans-serif",
+              fontSize: 9,
+              letterSpacing: "0.14em",
+              color: "#888884",
+              margin: "0 0 8px",
+            }}>
+              Featured in
+            </p>
+            <div style={{ display: "flex", flexDirection: "row", gap: 16, alignItems: "center" }}>
+              <a
+                href="https://www.musicradar.com/music-tech/plugins/the-biggest-driver-right-now-is-people-wanting-everything-fast-predicting-the-future-evolution-of-plugin-design"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: "'MDUIXS', sans-serif",
+                  fontSize: 10,
+                  letterSpacing: "0.12em",
+                  color: "#1A1A18",
+                  textDecoration: "none",
+                }}
+              >
+                MusicRadar
+              </a>
+              <span style={{
+                fontFamily: "'MDUIXS', sans-serif",
+                fontSize: 10,
+                letterSpacing: "0.12em",
+                color: "#1A1A18",
+              }}>
+                BestDesignsOnX
+              </span>
+            </div>
+          </div>
+
           {/* Connect */}
           <div>
             <p style={{

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { morph } from 'getruun'
 import Link from 'next/link'
 import type { Section } from './WorkTOC'
@@ -9,7 +10,7 @@ const SPRING       = { stiffness: 320, damping: 22, mass: 1 }
 const CHEVRON      = 'M15 18 L9 12 L15 6 M15 18 L9 12 L15 6'
 const CHEVRONS_LEFT = 'M11 17 L6 12 L11 7 M18 17 L13 12 L18 7'
 
-export function WorkSidebar({ sections }: { sections: Section[] }) {
+export function WorkSidebar({ sections, animDelay = 0 }: { sections: Section[], animDelay?: number }) {
   const [active, setActive] = useState(sections[0]?.id ?? '')
   const pathRef = useRef<SVGPathElement>(null)
 
@@ -42,16 +43,20 @@ export function WorkSidebar({ sections }: { sections: Section[] }) {
   }, [sections])
 
   return (
-    <div style={{
-      position: 'fixed',
-      left: 'calc(50% - 320px - 48px - 152px)',
-      top: 112,
-      width: 152,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 32,
-      zIndex: 5,
-    }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, delay: animDelay, ease: [0.25, 0.1, 0.25, 1] }}
+      style={{
+        position: 'fixed',
+        left: 'calc(50% - 320px - 48px - 152px)',
+        top: 112,
+        width: 152,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 32,
+        zIndex: 5,
+      }}>
 
       {/* Back button */}
       <Link
@@ -111,6 +116,6 @@ export function WorkSidebar({ sections }: { sections: Section[] }) {
         ))}
       </nav>
 
-    </div>
+    </motion.div>
   )
 }

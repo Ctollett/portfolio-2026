@@ -226,11 +226,13 @@ export function CardCarousel({
 }) {
   const router       = useRouter();
   const [activeIdx, setActiveIdx] = useState(0);
+  const [canvasReady, setCanvasReady] = useState(false);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const outerRefs    = useRef<(HTMLDivElement | null)[]>([]);
   const titleRef    = useRef<HTMLSpanElement>(null);
   const yearRef     = useRef<HTMLSpanElement>(null);
   const descRef     = useRef<HTMLSpanElement>(null);
+  const firstLoad   = typeof window !== 'undefined' && !sessionStorage.getItem('intro-played');
 
   const padded = useMemo(() => [
     ...cards.slice(-PADDING).map((c) => ({ ...c, ghost: true  })),
@@ -261,6 +263,9 @@ export function CardCarousel({
         import("lenis"),
         import("three"),
       ]);
+
+      // Guard: component may have unmounted while dynamic imports were in-flight
+      if (unmounted) return () => {};
 
       const renderer = new THREE.WebGLRenderer({
         canvas: canvasRef.current!,
@@ -330,6 +335,13 @@ export function CardCarousel({
             })
         )
       );
+
+      // Guard: component may have unmounted while textures were loading
+      if (unmounted) {
+        videoMap.forEach(v => { v.pause(); v.src = ""; v.load(); });
+        renderer.dispose();
+        return () => {};
+      }
 
       const geometry = new THREE.PlaneGeometry(CARD_W, CARD_H, 32, 32);
 
@@ -410,8 +422,42 @@ export function CardCarousel({
 
       lenis.on("scroll", (e: { scroll: number }) => { scroll = e.scroll; });
 
+      // Slot-machine spin: only on first session load
+      const SNAP_LOOPS = 7;
+      const snapOffset = (SNAP_LOOPS * cards.length + 2) * sectionH;
+      const SNAP_DURATION = 3000;
+      const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+      const isFirstLoad = !sessionStorage.getItem('intro-played');
+      let snapStartTime = isFirstLoad ? -1 : -2; // -1 = waiting, -2 = skip
+
+      if (isFirstLoad) {
+        sessionStorage.setItem('intro-played', '1');
+        window.scrollTo(0, midScroll + snapOffset);
+        scroll = midScroll + snapOffset;
+      } else {
+        window.scrollTo(0, midScroll);
+        scroll = midScroll;
+      }
+
       function raf(t: number) {
-        lenis.raf(t);
+        if (snapStartTime === -1) snapStartTime = t;
+
+        const snapElapsed = t - snapStartTime;
+        if (snapStartTime >= 0 && snapElapsed < SNAP_DURATION) {
+          const progress = easeOutCubic(snapElapsed / SNAP_DURATION);
+          const newPos = (midScroll + snapOffset) - snapOffset * progress;
+          scroll = newPos;
+          window.scrollTo(0, Math.round(newPos));
+        } else if (snapStartTime >= 0) {
+          // Spin done — sync Lenis and hand off
+          snapStartTime = -2;
+          scroll = midScroll;
+          window.scrollTo(0, midScroll);
+          lenis.scrollTo(midScroll, { immediate: true } as Parameters<typeof lenis.scrollTo>[1]);
+        } else {
+          lenis.raf(t);
+        }
+
         overlayMat.uniforms.uTime.value = t * 0.001;
 
         const rawFloat  = ((scroll / sectionH) % cards.length + cards.length) % cards.length;
@@ -493,9 +539,11 @@ export function CardCarousel({
       }
 
       rafId = requestAnimationFrame(raf);
+      setCanvasReady(true);
       return () => {
         cancelAnimationFrame(rafId);
         lenis.destroy();
+        window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
         videoMap.forEach(v => { v.pause(); v.src = ""; v.load(); });
         contactMeshes.forEach(m => m.material.dispose());
         shadowMeshes.forEach(m => m.material.dispose());
@@ -504,9 +552,19 @@ export function CardCarousel({
       };
     }
 
+    let unmounted = false;
     let cleanup: (() => void) | undefined;
-    init().then((fn) => { cleanup = fn; });
-    return () => { cleanup?.(); };
+    init().then((fn) => {
+      if (unmounted) {
+        fn(); // init resolved after unmount — run cleanup immediately to kill RAF + reset scroll
+      } else {
+        cleanup = fn;
+      }
+    });
+    return () => {
+      unmounted = true;
+      cleanup?.();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -514,8 +572,8 @@ export function CardCarousel({
       <m.canvas
         ref={canvasRef}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.7, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
+        animate={{ opacity: canvasReady ? 1 : 0 }}
+        transition={{ duration: firstLoad ? 0.15 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
         style={{ position: "fixed", top: 0, left: 0, zIndex: 2, pointerEvents: "none" }}
       />
 
@@ -523,7 +581,7 @@ export function CardCarousel({
       <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+        transition={{ duration: 0.4, delay: firstLoad ? 2.8 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
         style={{
           position: "fixed",
           top: "50%",
@@ -551,7 +609,7 @@ export function CardCarousel({
       <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        transition={{ duration: 0.4, delay: firstLoad ? 3.0 : 0.55, ease: [0.25, 0.1, 0.25, 1] }}
         style={{
           position: "fixed",
           top: "50%",
@@ -605,15 +663,19 @@ export function CardCarousel({
         />
       )}
 
-      <div style={{
-        position: "fixed",
-        left: "50%",
-        top: "50%",
-        transform: "translate(-50%, -50%)",
-        width: CARD_W,
-        height: CARD_H,
-        overflow: "visible",
-      }}>
+      <m.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: canvasReady ? 1 : 0 }}
+        transition={{ duration: firstLoad ? 0.15 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+        style={{
+          position: "fixed",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: CARD_W,
+          height: CARD_H,
+          overflow: "visible",
+        }}>
         {padded.map((_card, i) => {
           const initDist    = Math.abs(i - PADDING);
           const initScale   = 1 - Math.min(initDist, 1) * 0.05;
@@ -635,7 +697,7 @@ export function CardCarousel({
             />
           );
         })}
-      </div>
+      </m.div>
     </>
   );
 }
