@@ -226,13 +226,45 @@ export function CardCarousel({
 }) {
   const router       = useRouter();
   const [activeIdx, setActiveIdx] = useState(0);
+  const [overlayIdx, setOverlayIdx] = useState(0);
+  const overlayContentRef = useRef<HTMLDivElement>(null);
+  const overlayTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [canvasReady, setCanvasReady] = useState(false);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const outerRefs    = useRef<(HTMLDivElement | null)[]>([]);
+  const overlayRef   = useRef<HTMLDivElement>(null);
   const titleRef    = useRef<HTMLSpanElement>(null);
   const yearRef     = useRef<HTMLSpanElement>(null);
   const descRef     = useRef<HTMLSpanElement>(null);
   const firstLoad   = typeof window !== 'undefined' && !sessionStorage.getItem('intro-played');
+
+  const getDisplayDims = () => {
+    const vw = window.innerWidth;
+    const w = Math.min(CARD_W, Math.round(vw * 0.72));
+    return { w, h: Math.round(w * (CARD_H / CARD_W)), vw };
+  };
+  const [dims, setDims] = useState({ w: CARD_W, h: CARD_H, vw: 1280 });
+
+  useEffect(() => {
+    setDims(getDisplayDims());
+    const onResize = () => setDims(getDisplayDims());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    clearTimeout(overlayTimer.current);
+    overlayTimer.current = setTimeout(() => {
+      setOverlayIdx(activeIdx);
+      requestAnimationFrame(() => {
+        if (overlayContentRef.current) {
+          overlayContentRef.current.style.transition = 'opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+          overlayContentRef.current.style.opacity = '1';
+        }
+      });
+    }, 200);
+    return () => clearTimeout(overlayTimer.current);
+  }, [activeIdx]);
 
   const padded = useMemo(() => [
     ...cards.slice(-PADDING).map((c) => ({ ...c, ghost: true  })),
@@ -250,8 +282,9 @@ export function CardCarousel({
     const padded = paddedRef.current;
 
     const vh       = window.innerHeight;
-    const cardStep = CARD_STEP;
-    const sectionH = Math.round(vh * 0.7);
+    const isMobile = window.innerWidth < 900;
+    let cardStep   = isMobile ? Math.round(vh * 0.38) : CARD_STEP;
+    const sectionH = Math.round(vh * (isMobile ? 0.75 : 0.7));
     const totalH   = cards.length * sectionH * LOOPS;
     const midScroll = Math.floor(LOOPS / 2) * cards.length * sectionH;
 
@@ -467,6 +500,11 @@ export function CardCarousel({
         if (newActive !== lastActive) {
           lastActive = newActive;
           setActiveIdx(newActive);
+          // Hide label instantly — same frame, before useEffect can fire
+          if (overlayContentRef.current) {
+            overlayContentRef.current.style.transition = 'none';
+            overlayContentRef.current.style.opacity = '0';
+          }
           if (titleRef.current) titleRef.current.textContent = cards[newActive].title;
           if (yearRef.current)  yearRef.current.textContent  = cards[newActive].label;
           if (descRef.current)  descRef.current.textContent  = cards[newActive].body ?? "";
@@ -491,6 +529,11 @@ export function CardCarousel({
           el.style.transform = `translateY(${offset.toFixed(1)}px) scale(${s.toFixed(3)})`;
           el.style.opacity   = o.toFixed(3);
           el.style.zIndex    = String(Math.round(100 - dist * 10));
+        }
+
+        if (overlayRef.current) {
+          const centerOffset = (Math.round(floatIndex) - floatIndex) * cardStep;
+          overlayRef.current.style.transform = `translateY(${centerOffset.toFixed(1)}px)`;
         }
 
         for (let i = 0; i < padded.length; i++) {
@@ -538,11 +581,28 @@ export function CardCarousel({
         rafId = requestAnimationFrame(raf);
       }
 
+      const handleResize = () => {
+        const vw = window.innerWidth;
+        const newVh = window.innerHeight;
+        renderer.setSize(vw, newVh);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        camera.left   = -vw / 2;
+        camera.right  =  vw / 2;
+        camera.top    =  newVh / 2;
+        camera.bottom = -newVh / 2;
+        camera.updateProjectionMatrix();
+        cardStep = vw < 900 ? Math.round(newVh * 0.38) : CARD_STEP;
+        const dw = Math.min(CARD_W, Math.round(vw * 0.72));
+        setDims({ w: dw, h: Math.round(dw * (CARD_H / CARD_W)), vw });
+      };
+      window.addEventListener('resize', handleResize);
+
       rafId = requestAnimationFrame(raf);
       setCanvasReady(true);
       return () => {
         cancelAnimationFrame(rafId);
         lenis.destroy();
+        window.removeEventListener('resize', handleResize);
         window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
         videoMap.forEach(v => { v.pause(); v.src = ""; v.load(); });
         contactMeshes.forEach(m => m.material.dispose());
@@ -577,8 +637,8 @@ export function CardCarousel({
         style={{ position: "fixed", top: 0, left: 0, zIndex: 2, pointerEvents: "none" }}
       />
 
-      {/* Title — sibling of canvas so zIndex works above WebGL */}
-      <m.div
+      {/* Title — hidden on mobile where side panels have no room */}
+      {dims.vw >= 900 && <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: firstLoad ? 2.8 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
@@ -586,7 +646,7 @@ export function CardCarousel({
           position: "fixed",
           top: "50%",
           left: 0,
-          width: `calc(50vw - ${CARD_W / 2}px)`,
+          width: `calc(50vw - ${dims.w / 2}px)`,
           transform: "translateY(-50%)",
           display: "flex",
           justifyContent: "center",
@@ -603,17 +663,17 @@ export function CardCarousel({
         }}>
           {cards[0].title}
         </span>
-      </m.div>
+      </m.div>}
 
-      {/* Year + desc — sibling of canvas so zIndex works above WebGL */}
-      <m.div
+      {/* Year + desc — hidden on mobile */}
+      {dims.vw >= 900 && <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: firstLoad ? 3.0 : 0.55, ease: [0.25, 0.1, 0.25, 1] }}
         style={{
           position: "fixed",
           top: "50%",
-          left: `calc(50vw + ${CARD_W / 2}px)`,
+          left: `calc(50vw + ${dims.w / 2}px)`,
           right: 0,
           transform: "translateY(-50%)",
           display: "flex",
@@ -643,7 +703,7 @@ export function CardCarousel({
         }}>
           {cards[0].body ?? ""}
         </span>
-      </m.div>
+      </m.div>}
 
       {/* Center card click target */}
       {cards[activeIdx]?.slug && (
@@ -654,8 +714,8 @@ export function CardCarousel({
             left: "50%",
             top: "50%",
             transform: "translate(-50%, -50%)",
-            width: CARD_W,
-            height: CARD_H,
+            width: dims.w,
+            height: dims.h,
             zIndex: 10,
             cursor: "pointer",
             pointerEvents: "auto",
@@ -672,9 +732,10 @@ export function CardCarousel({
           left: "50%",
           top: "50%",
           transform: "translate(-50%, -50%)",
-          width: CARD_W,
-          height: CARD_H,
+          width: dims.w,
+          height: dims.h,
           overflow: "visible",
+          zIndex: 3,
         }}>
         {padded.map((_card, i) => {
           const initDist    = Math.abs(i - PADDING);
@@ -697,6 +758,45 @@ export function CardCarousel({
             />
           );
         })}
+
+        {/* Mobile label — inside container so it inherits the stacking context and syncs via RAF */}
+        {dims.vw < 900 && (
+          <div
+            ref={overlayRef}
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              width: "100%",
+              paddingTop: 16,
+              pointerEvents: "none",
+            }}
+          >
+            <div ref={overlayContentRef} style={{ opacity: 0 }}>
+              <p style={{
+                fontFamily: "'Canela', serif",
+                fontSize: 22,
+                fontStyle: "italic",
+                fontWeight: 300,
+                color: "#1A1A18",
+                margin: "0 0 4px",
+                lineHeight: 1.1,
+              }}>
+                {cards[overlayIdx]?.title}
+              </p>
+              <p style={{
+                fontFamily: "'MDUIXS', sans-serif",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                color: "#888884",
+                margin: 0,
+              }}>
+                {cards[overlayIdx]?.label} · {cards[overlayIdx]?.body}
+              </p>
+            </div>
+          </div>
+        )}
+
       </m.div>
     </>
   );

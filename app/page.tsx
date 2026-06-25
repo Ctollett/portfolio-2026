@@ -25,6 +25,7 @@ const NAV_ITEMS = [
 export default function Home() {
   const pageRef = useRef<HTMLDivElement>(null);
   const [dark, setDark] = useState(false);
+  const [vw, setVw] = useState(1280);
   const pathname = usePathname();
   const isFirstLoad = typeof window !== 'undefined' && !sessionStorage.getItem('intro-played');
   const uiDelay = isFirstLoad ? 4.2 : 0.75;
@@ -32,6 +33,15 @@ export default function Home() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
   }, [dark]);
+
+  useEffect(() => {
+    setVw(window.innerWidth);
+    const onResize = () => setVw(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const colW = vw < 900 ? 0 : vw < 1200 ? Math.round((vw - 480) / 2 * 0.7) : 360;
 
 
   return (
@@ -107,10 +117,12 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
             style={{
-              width: 360,
+              width: colW,
+              flexShrink: 0,
+              overflow: "hidden",
               display: "flex",
               flexDirection: "column",
-              padding: "0 32px 32px",
+              padding: colW > 0 ? "0 32px 32px" : 0,
             }}
           >
             <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
@@ -141,11 +153,13 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
             style={{
-              width: 360,
+              width: colW,
+              flexShrink: 0,
+              overflow: "hidden",
               display: "flex",
               flexDirection: "column",
               justifyContent: "flex-end",
-              padding: "0 32px 32px",
+              padding: colW > 0 ? "0 32px 32px" : 0,
             }}
           >
             <div style={{ display: "flex", flexDirection: "row", alignItems: "flex-end", justifyContent: "flex-end", gap: 24 }}>
