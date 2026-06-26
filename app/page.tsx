@@ -38,24 +38,17 @@ export default function Home() {
   return (
     <div ref={pageRef} style={{ background: dark ? "#111110" : "#F4F2ED" }}>
 
-      {/* Fixed shell — column: top bar + body */}
+      <NavBar animDelay={uiDelay} onThemeToggle={() => setDark(d => !d)} />
+
+      {/* Fixed shell — body only, carousel centered, bio bottom-left, copyright bottom-right */}
       <div style={{
         position: "fixed",
         inset: 0,
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         zIndex: 1,
         pointerEvents: "none",
       }}>
-
-        <NavBar animDelay={uiDelay} fixed={false} />
-
-        {/* Body — carousel centered, bio bottom-left, copyright bottom-right */}
-        <div style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "row",
-        }}>
 
           {/* Left column: name + copyright at bottom */}
           <m.div
@@ -157,8 +150,6 @@ export default function Home() {
 
             </div>
           </m.div>
-
-        </div>
 
       </div>
     </div>

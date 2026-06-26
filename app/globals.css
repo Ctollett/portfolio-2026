@@ -119,8 +119,17 @@
 }
 
 html {
-  scrollbar-gutter: stable;
   background: #F4F2ED;
+  scrollbar-gutter: auto;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
 }
 
 html[data-theme="dark"] {
