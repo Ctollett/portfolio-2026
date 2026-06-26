@@ -166,7 +166,6 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false }: NavBarPr
             fill="none"
             stroke="#1A1A18"
             strokeWidth="1.75"
-            strokeLinecap="round"
           >
             <path ref={iconRef} d={HAMBURGER} />
           </svg>
