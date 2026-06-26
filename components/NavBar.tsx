@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
+import { morph } from "getruun";
 
 const NAV_ITEMS = [
   { label: "Work",    href: "/" },
@@ -18,8 +19,15 @@ const SOCIALS = [
   { label: "GitHub",   href: "https://github.com/coltontollett" },
 ];
 
+// Three lines left-aligned, middle is longest — each as its own subpath
+// so the morph maps line-by-line to the X diagonals
+const HAMBURGER = "M3 6 L15 6 M3 12 L21 12 M3 18 L15 18";
+// X encoded as 3 subpaths: two diagonals + degenerate center point
+const CLOSE_X   = "M18 6 L6 18 M6 6 L18 18 M12 12 L12 12";
+const SPRING    = { stiffness: 280, damping: 22, mass: 1 };
+
 const Logo = ({ onClick }: { onClick?: () => void }) => (
-  <Link href="/" onClick={onClick} style={{ display: "flex", textDecoration: "none" }}>
+  <Link href="/" onClick={onClick} style={{ display: "flex", textDecoration: "none", pointerEvents: "auto" }}>
     <svg width="28" height="20" viewBox="0 0 29 21" fill="none">
       <path d="M8.47189 9.49798H0.5C0.5 9.49798 0.817269 1.26634 9.5 0.5V8.86104C9.5 8.86104 9.32329 9.4353 8.47189 9.5V9.49798Z" stroke="#000000" strokeMiterlimit="10"/>
       <path d="M8.47189 11.5H0.5C0.5 11.5 0.817269 19.7342 9.5 20.5V12.1378C9.5 12.1378 9.32329 11.563 8.47189 11.5Z" stroke="#000000" strokeMiterlimit="10"/>
@@ -41,6 +49,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false }: NavBarPr
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [vw, setVw] = useState(1280);
+  const iconRef = useRef<SVGPathElement>(null);
 
   useEffect(() => {
     setVw(window.innerWidth);
@@ -49,10 +58,23 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false }: NavBarPr
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Close on route change
-  useEffect(() => { setOpen(false); }, [pathname]);
+  // Reset icon on route change
+  useEffect(() => {
+    setOpen(false);
+    if (iconRef.current) morph(iconRef.current, HAMBURGER, SPRING);
+  }, [pathname]);
 
   const isMobile = vw < 1080;
+
+  const handleOpen = () => {
+    setOpen(true);
+    if (iconRef.current) morph(iconRef.current, CLOSE_X, SPRING);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    if (iconRef.current) morph(iconRef.current, HAMBURGER, SPRING);
+  };
 
   const barStyle: React.CSSProperties = {
     display: "flex",
@@ -76,6 +98,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false }: NavBarPr
 
   return (
     <>
+      {/* Top bar — logo always, desktop nav or nothing on mobile (button floats fixed) */}
       <div style={barStyle}>
         <m.div
           initial={{ opacity: 0 }}
@@ -111,30 +134,46 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false }: NavBarPr
             ))}
           </m.nav>
         )}
-
-        {isMobile && (
-          <m.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: animDelay, ease }}
-            onClick={() => setOpen(true)}
-            style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              fontFamily: "'MDUIXS', sans-serif",
-              fontSize: 11,
-              letterSpacing: "0.14em",
-              color: "#1A1A18",
-              pointerEvents: "auto",
-            }}
-          >
-            MENU
-          </m.button>
-        )}
       </div>
 
+      {/* Mobile toggle button — floats above overlay so morph is always visible */}
+      {isMobile && (
+        <m.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: animDelay, ease }}
+          onClick={open ? handleClose : handleOpen}
+          style={{
+            position: "fixed",
+            top: 28,
+            right: 28,
+            zIndex: 101,
+            background: "none",
+            border: "none",
+            padding: 4,
+            cursor: "pointer",
+            pointerEvents: "auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          aria-label={open ? "Close menu" : "Open menu"}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1A1A18"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+          >
+            <path ref={iconRef} d={HAMBURGER} />
+          </svg>
+        </m.button>
+      )}
+
+      {/* Fullscreen overlay */}
       <AnimatePresence>
         {open && (
           <m.div
@@ -153,31 +192,12 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false }: NavBarPr
               pointerEvents: "auto",
             }}
           >
-            {/* Top row */}
-            <div style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}>
-              <Logo onClick={() => setOpen(false)} />
-              <button
-                onClick={() => setOpen(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                  fontFamily: "'MDUIXS', sans-serif",
-                  fontSize: 11,
-                  letterSpacing: "0.14em",
-                  color: "#1A1A18",
-                }}
-              >
-                CLOSE
-              </button>
+            {/* Logo in overlay top row */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Logo onClick={handleClose} />
             </div>
 
-            {/* Nav links */}
+            {/* Nav links — centered vertically */}
             <div style={{
               flex: 1,
               display: "flex",
@@ -195,7 +215,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false }: NavBarPr
                 >
                   <Link
                     href={item.href}
-                    onClick={() => setOpen(false)}
+                    onClick={handleClose}
                     style={{
                       fontFamily: "'Canela', serif",
                       fontSize: 52,
