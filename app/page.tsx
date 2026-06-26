@@ -41,7 +41,7 @@ export default function Home() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  const colW = vw < 900 ? 0 : vw < 1200 ? Math.round((vw - 480) / 2 * 0.7) : 360;
+  const colW = vw < 1080 ? 0 : vw < 1400 ? Math.round((vw - 480) / 2 * 0.7) : 360;
 
 
   return (

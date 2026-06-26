@@ -226,13 +226,12 @@ export function CardCarousel({
 }) {
   const router       = useRouter();
   const [activeIdx, setActiveIdx] = useState(0);
-  const [overlayIdx, setOverlayIdx] = useState(0);
-  const overlayContentRef = useRef<HTMLDivElement>(null);
-  const overlayTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [canvasReady, setCanvasReady] = useState(false);
-  const canvasRef    = useRef<HTMLCanvasElement>(null);
-  const outerRefs    = useRef<(HTMLDivElement | null)[]>([]);
-  const overlayRef   = useRef<HTMLDivElement>(null);
+  const canvasRef  = useRef<HTMLCanvasElement>(null);
+  const outerRefs  = useRef<(HTMLDivElement | null)[]>([]);
+  const labelRefs  = useRef<(HTMLDivElement | null)[]>([]);
+  const titlePanelRef = useRef<HTMLDivElement>(null);
+  const descPanelRef  = useRef<HTMLDivElement>(null);
   const titleRef    = useRef<HTMLSpanElement>(null);
   const yearRef     = useRef<HTMLSpanElement>(null);
   const descRef     = useRef<HTMLSpanElement>(null);
@@ -252,20 +251,6 @@ export function CardCarousel({
     return () => window.removeEventListener('resize', onResize);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    clearTimeout(overlayTimer.current);
-    overlayTimer.current = setTimeout(() => {
-      setOverlayIdx(activeIdx);
-      requestAnimationFrame(() => {
-        if (overlayContentRef.current) {
-          overlayContentRef.current.style.transition = 'opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
-          overlayContentRef.current.style.opacity = '1';
-        }
-      });
-    }, 200);
-    return () => clearTimeout(overlayTimer.current);
-  }, [activeIdx]);
-
   const padded = useMemo(() => [
     ...cards.slice(-PADDING).map((c) => ({ ...c, ghost: true  })),
     ...cards.map((c)               => ({ ...c, ghost: false })),
@@ -281,8 +266,8 @@ export function CardCarousel({
     const cards  = cardsRef.current;
     const padded = paddedRef.current;
 
-    const vh       = window.innerHeight;
-    const isMobile = window.innerWidth < 900;
+    let vh         = window.innerHeight;
+    const isMobile = window.innerWidth < 1080;
     let cardStep   = isMobile ? Math.round(vh * 0.38) : CARD_STEP;
     const sectionH = Math.round(vh * (isMobile ? 0.75 : 0.7));
     const totalH   = cards.length * sectionH * LOOPS;
@@ -500,11 +485,6 @@ export function CardCarousel({
         if (newActive !== lastActive) {
           lastActive = newActive;
           setActiveIdx(newActive);
-          // Hide label instantly — same frame, before useEffect can fire
-          if (overlayContentRef.current) {
-            overlayContentRef.current.style.transition = 'none';
-            overlayContentRef.current.style.opacity = '0';
-          }
           if (titleRef.current) titleRef.current.textContent = cards[newActive].title;
           if (yearRef.current)  yearRef.current.textContent  = cards[newActive].label;
           if (descRef.current)  descRef.current.textContent  = cards[newActive].body ?? "";
@@ -524,54 +504,52 @@ export function CardCarousel({
           if (!el) continue;
           const dist   = Math.abs(i - floatIndex);
           const offset = (i - floatIndex) * cardStep;
+          // Scale is applied to WebGL only — DOM anchor only gets translateY so labels track perfectly
           const s = 1 - Math.min(dist, 1) * 0.05;
           const o = Math.max(0, 1 - Math.min(dist, 2) * 0.3);
-          el.style.transform = `translateY(${offset.toFixed(1)}px) scale(${s.toFixed(3)})`;
+          el.style.transform = `translateY(${offset.toFixed(1)}px)`;
           el.style.opacity   = o.toFixed(3);
           el.style.zIndex    = String(Math.round(100 - dist * 10));
-        }
 
-        if (overlayRef.current) {
-          const centerOffset = (Math.round(floatIndex) - floatIndex) * cardStep;
-          overlayRef.current.style.transform = `translateY(${centerOffset.toFixed(1)}px)`;
-        }
 
-        for (let i = 0; i < padded.length; i++) {
-          const el = outerRefs.current[i];
-          if (!el) continue;
-          const dist = Math.abs(i - floatIndex);
-          const rect = el.getBoundingClientRect();
+
+          // Label opacity — only for mobile, only when card is near center
+          const lbl = labelRefs.current[i];
+          if (lbl) {
+            lbl.style.opacity = window.innerWidth < 1080
+              ? String(Math.max(0, 1 - dist * 3))
+              : "0";
+          }
+
+          // WebGL mesh — use card placeholder rect (firstElementChild), not full flex column
+          const cardEl = el.firstElementChild as HTMLElement | null;
+          const rect = cardEl ? cardEl.getBoundingClientRect() : el.getBoundingClientRect();
           const cx   = rect.left + rect.width  / 2 - window.innerWidth / 2;
           const cy   = -(rect.top  + rect.height / 2 - vh / 2);
-          const o    = Math.max(0, 1 - Math.min(dist, 2) * 0.3);
           const mesh = meshes[i];
           mesh.visible = true;
           mesh.position.set(cx, cy, 0);
-          mesh.scale.set(rect.width / CARD_W, rect.height / CARD_H, 1);
+          mesh.scale.set(rect.width / CARD_W * s, rect.height / CARD_H * s, 1);
           const u = (mesh.material as THREE.ShaderMaterial).uniforms;
           u.uOpacity.value        = o;
           u.uDistFromCenter.value = cy / (vh / 2);
 
-          // Shadow vanishes as soon as distortion begins.
           const distFromCenter = cy / (vh / 2);
           const lensVal = Math.min(1, Math.max(0, (Math.abs(distFromCenter) - 0.6) / 0.4));
           const shadowFade = Math.max(0, 1 - lensVal * 6);
 
-          // Bell curve peaking at centre (card aligned with text), quick rise and fall
           const rise = Math.min(1, Math.max(0, (distFromCenter + 0.25) / 0.25));
           const riseS = rise * rise * (3 - 2 * rise);
           const fall = Math.min(1, Math.max(0, (0.25 - distFromCenter) / 0.25));
           const fallS = fall * fall * (3 - 2 * fall);
           const rimLight = riseS * fallS;
 
-          // Contact shadow disabled — the full-rect SDF created a card-shaped halo.
           contactMeshes[i].visible = false;
 
-          // Single thin-bar drop shadow sitting just below the card's bottom edge.
           const shadow = shadowMeshes[i];
           shadow.visible = shadowFade > 0.01;
-          shadow.position.set(cx, cy - rect.height / 2, -0.1);
-          shadow.scale.set(rect.width / CARD_W, rect.height / CARD_H, 1);
+          shadow.position.set(cx, cy - rect.height / 2 * s, -0.1);
+          shadow.scale.set(rect.width / CARD_W * s, rect.height / CARD_H * s, 1);
           const su = (shadow.material as THREE.ShaderMaterial).uniforms;
           su.uOpacity.value        = o * shadowFade;
           su.uLightIntensity.value = rimLight;
@@ -583,15 +561,15 @@ export function CardCarousel({
 
       const handleResize = () => {
         const vw = window.innerWidth;
-        const newVh = window.innerHeight;
-        renderer.setSize(vw, newVh);
+        vh = window.innerHeight;
+        renderer.setSize(vw, vh);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         camera.left   = -vw / 2;
         camera.right  =  vw / 2;
-        camera.top    =  newVh / 2;
-        camera.bottom = -newVh / 2;
+        camera.top    =  vh / 2;
+        camera.bottom = -vh / 2;
         camera.updateProjectionMatrix();
-        cardStep = vw < 900 ? Math.round(newVh * 0.38) : CARD_STEP;
+        cardStep = vw < 1080 ? Math.round(vh * 0.38) : CARD_STEP;
         const dw = Math.min(CARD_W, Math.round(vw * 0.72));
         setDims({ w: dw, h: Math.round(dw * (CARD_H / CARD_W)), vw });
       };
@@ -638,7 +616,8 @@ export function CardCarousel({
       />
 
       {/* Title — hidden on mobile where side panels have no room */}
-      {dims.vw >= 900 && <m.div
+      {dims.vw >= 1080 && <m.div
+        ref={titlePanelRef}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: firstLoad ? 2.8 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
@@ -666,7 +645,8 @@ export function CardCarousel({
       </m.div>}
 
       {/* Year + desc — hidden on mobile */}
-      {dims.vw >= 900 && <m.div
+      {dims.vw >= 1080 && <m.div
+        ref={descPanelRef}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: firstLoad ? 3.0 : 0.55, ease: [0.25, 0.1, 0.25, 1] }}
@@ -737,67 +717,62 @@ export function CardCarousel({
           overflow: "visible",
           zIndex: 3,
         }}>
+        {/* Card position anchors — flex column so label flows naturally below card */}
         {padded.map((_card, i) => {
           const initDist    = Math.abs(i - PADDING);
-          const initScale   = 1 - Math.min(initDist, 1) * 0.05;
           const initOpacity = Math.max(0, 1 - Math.min(initDist, 2) * 0.3);
           const initOffset  = (i - PADDING) * CARD_STEP;
-
           return (
             <div
               key={i}
               ref={(el) => { outerRefs.current[i] = el; }}
               style={{
                 position: "absolute",
-                inset: 0,
-                transform: `translateY(${initOffset}px) scale(${initScale})`,
+                top: 0,
+                left: 0,
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                transform: `translateY(${initOffset}px)`,
                 opacity: initOpacity,
                 zIndex: Math.round(100 - initDist * 10),
                 willChange: "transform, opacity",
               }}
-            />
+            >
+              {/* Placeholder div — WebGL reads this element's rect for card position */}
+              <div style={{ width: "100%", height: dims.h, flexShrink: 0 }} />
+              {/* Per-card label — naturally below the card, hidden on desktop */}
+              <div
+                ref={(el) => { labelRefs.current[i] = el; }}
+                style={{ paddingTop: 16, opacity: 0, pointerEvents: "none" }}
+              >
+                <p style={{
+                  fontFamily: "'Canela', serif",
+                  fontSize: 22,
+                  fontStyle: "italic",
+                  fontWeight: 300,
+                  color: "#1A1A18",
+                  margin: "0 0 4px",
+                  lineHeight: 1.1,
+                }}>
+                  {_card.title}
+                </p>
+                <p style={{
+                  fontFamily: "'MDUIXS', sans-serif",
+                  fontSize: 11,
+                  letterSpacing: "0.06em",
+                  color: "#888884",
+                  margin: 0,
+                }}>
+                  {_card.label}{_card.body ? ` · ${_card.body}` : ""}
+                </p>
+              </div>
+            </div>
           );
         })}
 
-        {/* Mobile label — inside container so it inherits the stacking context and syncs via RAF */}
-        {dims.vw < 900 && (
-          <div
-            ref={overlayRef}
-            style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              width: "100%",
-              paddingTop: 16,
-              pointerEvents: "none",
-            }}
-          >
-            <div ref={overlayContentRef} style={{ opacity: 0 }}>
-              <p style={{
-                fontFamily: "'Canela', serif",
-                fontSize: 22,
-                fontStyle: "italic",
-                fontWeight: 300,
-                color: "#1A1A18",
-                margin: "0 0 4px",
-                lineHeight: 1.1,
-              }}>
-                {cards[overlayIdx]?.title}
-              </p>
-              <p style={{
-                fontFamily: "'MDUIXS', sans-serif",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                color: "#888884",
-                margin: 0,
-              }}>
-                {cards[overlayIdx]?.label} · {cards[overlayIdx]?.body}
-              </p>
-            </div>
-          </div>
-        )}
-
       </m.div>
+
     </>
   );
 }
