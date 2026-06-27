@@ -1,6 +1,7 @@
 'use client'
 
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useState, useEffect } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { WorkSidebar } from './WorkSidebar'
 import { WorkLiveLink } from './WorkLiveLink'
@@ -29,8 +30,17 @@ export function WorkPageClient({ item, slug }: Props) {
   const sections = entry?.sections ?? []
   const ContentComponent = entry?.Component ?? (() => null)
 
+  const [isMobile, setIsMobile] = useState(false)
+
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [])
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1080)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
   }, [])
 
   return (
@@ -42,7 +52,29 @@ export function WorkPageClient({ item, slug }: Props) {
       <WorkSidebar sections={sections} animDelay={0.6} />
 
       {/* Centered content column */}
-      <div style={{ maxWidth: 640, margin: '0 auto', padding: '120px 32px 50vh' }}>
+      <div style={{ maxWidth: 640, margin: '0 auto', padding: `${isMobile ? 140 : 120}px 32px 50vh` }}>
+
+        {/* Mobile back button */}
+        {isMobile && (
+          <Link href="/" style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 10,
+            fontFamily: "'MDUIXS', sans-serif",
+            fontSize: 13,
+            letterSpacing: '0.1em',
+            color: '#888884',
+            textDecoration: 'none',
+            marginBottom: 24,
+            minHeight: 44,
+            paddingRight: 16,
+          }}>
+            <svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="butt">
+              <path d="M8 1 L2 8 L8 15" />
+            </svg>
+            Work
+          </Link>
+        )}
 
         {/* Hero video */}
         {item.video && (
@@ -51,7 +83,7 @@ export function WorkPageClient({ item, slug }: Props) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.1, ease }}
             style={{
-              height: 480,
+              height: isMobile ? 220 : 360,
               borderRadius: 12,
               overflow: 'hidden',
               background: '#E8E5DE',
@@ -87,7 +119,7 @@ export function WorkPageClient({ item, slug }: Props) {
               fontSize: 40,
               fontWeight: 300,
               fontStyle: 'italic',
-              color: '#1A1A18',
+              color: isMobile ? '#C0582A' : '#1A1A18',
               margin: 0,
               lineHeight: 1,
             }}>

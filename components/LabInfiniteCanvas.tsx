@@ -112,7 +112,7 @@ export default function LabInfiniteCanvas({ labs }: { labs: LabItem[] }) {
   const isMobile   = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
 
   // Push camera back on mobile so more cards are visible
-  const effectiveCamZ  = isMobile ? CAM_Z * 1.8 : CAM_Z;
+  const effectiveCamZ  = isMobile ? CAM_Z * 1.2 : CAM_Z;
   const effectiveCamZRef = useRef(effectiveCamZ);
   effectiveCamZRef.current = effectiveCamZ;
   const cardVh         = CARD / (2 * Math.tan((FOV / 2) * (Math.PI / 180)) * (effectiveCamZ - MAX_Z)) * 100;
@@ -152,6 +152,7 @@ export default function LabInfiniteCanvas({ labs }: { labs: LabItem[] }) {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(BG_HEX);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.domElement.style.touchAction = 'none';
       mountRef.current.appendChild(renderer.domElement);
 
       const camZ   = effectiveCamZRef.current;
