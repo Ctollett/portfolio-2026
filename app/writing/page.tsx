@@ -1,9 +1,19 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { WritingSection } from "@/components";
 import { NavBar } from "@/components/NavBar";
 
 export default function WritingPage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1080);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   return (
     <div style={{ background: "#F4F2ED", minHeight: "100vh" }}>
 
@@ -16,7 +26,8 @@ export default function WritingPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "0 24px",
+        padding: isMobile ? "0 28px" : "0 24px",
+        overflowY: "auto",
       }}>
         <div style={{ width: "100%", maxWidth: 628 }}>
           <WritingSection />
