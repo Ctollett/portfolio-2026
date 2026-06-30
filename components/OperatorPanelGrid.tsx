@@ -103,7 +103,7 @@ const CARDS: {
   },
   {
     label: 'Modulation Envelope',
-    body: "Shapes how the operator's modulation depth changes over time. Attack sets how long modulation takes to reach its peak. Decay brings it down. End sets the resting depth it settles at — controlling the FM tone's evolution independently from the amplitude envelope.",
+    body: "Shapes how the operator's modulation depth changes over time. Attack sets how long modulation takes to reach its peak. Decay brings it down. End sets the resting depth it settles at, controlling the FM tone's evolution independently from the amplitude envelope.",
     span: true,
   },
 ]

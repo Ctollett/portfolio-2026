@@ -15,6 +15,13 @@ export const sections: Section[] = [
   { id: 'aesthetic-direction',   label: 'Aesthetic Direction' },
 ]
 
+const proseLink: React.CSSProperties = {
+  color: '#1A1A18',
+  textDecoration: 'underline',
+  textUnderlineOffset: 3,
+  textDecorationColor: 'rgba(26,26,24,0.3)',
+}
+
 const prose: React.CSSProperties = {
   fontFamily: "'MDUIXS', sans-serif",
   fontSize: 14,
@@ -580,7 +587,13 @@ export default function TX84Content() {
         <p style={sectionLabel}>The Engine</p>
         <h2 style={sectionTitle}>Built to run in real time.</h2>
         <p style={prose}>
-          {/* YOUR TEXT — short paragraph, link to WASM DSP Engine case study */}
+          Every node on the canvas maps directly to an operator in the engine. When you connect two operators, draw a routing line, or turn a knob, the UI sends a parameter message to the audio thread and moves on. It never waits for a response. The synth keeps playing while you edit the patch. That separation is what makes real-time FM synthesis feel immediate: the interface and the sound run on completely independent threads, communicating only when something changes.
+        </p>
+        <p style={{ ...prose, margin: 0, textWrap: 'balance' }}>
+          {'Written in Rust and compiled to WebAssembly, it runs inside a dedicated AudioWorklet.'}
+        </p>
+        <p style={{ ...prose, margin: '12px 0 0' }}>
+          <a href="/work/wasm-dsp-engine" style={proseLink}>Read the WASM DSP Engine case study</a>
         </p>
       </section>
 
@@ -589,8 +602,111 @@ export default function TX84Content() {
         <p style={sectionLabel}>Aesthetic Direction</p>
         <h2 style={sectionTitle}>Instrument, not plugin.</h2>
         <p style={prose}>
-          {/* YOUR TEXT */}
+          The process of developing the visual language began by mapping the physical properties of the interaction design to the aesthetics of the FM synth era, circa 1983. Each design decision was intended to preserve the seriousness and precision of FM synthesis while translating that language into something native to the browser, an instrument you could discover rather than study.
         </p>
+        <p style={{ ...prose, margin: '20px 0 8px' }}>
+          <strong>Hardware</strong> was the first point of reference. The defining quality across these pieces is that their logic is visible. Routing is drawn out as a physical grid. Patch cables droop under gravity, making every connection legible at a glance. That physicality was the model: the weight of a cable, the resistance of a knob, the snap of a connection gives the interaction design something to reach toward.        </p>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 6,
+          margin: '0',
+        }}>
+          {[
+            { src: '01', wide: true },
+            { src: '02', wide: false },
+            { src: '03', wide: false },
+            { src: '04', wide: false },
+            { src: '05', wide: false },
+            { src: '06', wide: false },
+            { src: '07', wide: true },
+          ].map(({ src, wide }) => (
+            <div
+              key={src}
+              style={{
+                gridColumn: wide ? 'span 2' : undefined,
+                aspectRatio: wide ? '3/2' : '2/3',
+                borderRadius: 6,
+                overflow: 'hidden',
+                background: 'rgba(26,26,24,0.06)',
+              }}
+            >
+              <img
+                src={`/images/work/tx-84/moodboard/${src}.jpg`}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <p style={{ ...prose, margin: '56px 0 8px' }}>
+          <strong>Visual</strong> references came from the album art of the FM era itself.
+        </p>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 6,
+        }}>
+          {['01', '02', '03', '04', '05', '06'].map((src) => (
+            <div
+              key={src}
+              style={{
+                aspectRatio: '1/1',
+                borderRadius: 6,
+                overflow: 'hidden',
+                background: 'rgba(26,26,24,0.06)',
+              }}
+            >
+              <img
+                src={`/images/work/tx-84/moodboard/albums/${src}.jpg`}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <p style={{ ...prose, margin: '32px 0 16px' }}>
+          <strong>Color</strong> was pulled directly from the visual language of that era. The warm off-whites and near-blacks define the surfaces: the canvas sits dark, the panels sit light. The four operator accent colors map to the primary color blocking seen across the hardware and the album art, a deliberate nod to the way those objects used color as function rather than decoration.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {[
+            { label: 'Canvas',  swatches: [{ hex: '#1C1A18', name: 'Canvas' }, { hex: '#D8D3CA', name: 'App' }, { hex: '#E8E3D9', name: 'Panel' }] },
+            { label: 'Operators', swatches: [{ hex: '#2B5FD9', name: 'Carrier' }, { hex: '#D94F2B', name: 'Mod A' }, { hex: '#3B9E8E', name: 'Mod B1' }, { hex: '#E8C840', name: 'Mod B2' }] },
+          ].map(({ label, swatches }) => (
+            <div key={label}>
+              <p style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6E6C67', margin: '0 0 10px' }}>{label}</p>
+              <div style={{ display: 'flex', gap: 10 }}>
+                {swatches.map(({ hex, name }) => (
+                  <div key={hex} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ width: 72, height: 72, borderRadius: 8, background: hex, border: '1px solid rgba(26,26,24,0.1)' }} />
+                    <span style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 7, letterSpacing: '0.08em', color: '#AEABA4' }}>{name}</span>
+                    <span style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 7, letterSpacing: '0.06em', color: '#AEABA4' }}>{hex}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ ...prose, margin: '48px 0 20px' }}>
+          <strong>Typography</strong> follows the same logic as the color. PP Fraktion Mono carries all the control labels: uppercase, tightly tracked, built for precision at small sizes. Söhne handles the body and display text, chosen for its warmth and readability under dense information.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div style={{ borderRadius: 8, border: '1px solid rgba(26,26,24,0.1)', padding: '24px 28px' }}>
+            <p style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6E6C67', margin: '0 0 16px' }}>Söhne Buch — Display & Body</p>
+            <p style={{ fontFamily: "'Söhne', sans-serif", fontWeight: 400, fontSize: 52, letterSpacing: '0.02em', color: '#1A1A18', margin: 0, lineHeight: 1 }}>TX-84</p>
+            <p style={{ fontFamily: "'Söhne', sans-serif", fontWeight: 400, fontSize: 22, letterSpacing: '0.01em', color: '#555559', margin: '16px 0 0', lineHeight: 1.5 }}>Sound design at the node level.</p>
+          </div>
+          <div style={{ borderRadius: 8, border: '1px solid rgba(26,26,24,0.1)', padding: '24px 28px' }}>
+            <p style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6E6C67', margin: '0 0 16px' }}>PP Fraktion Mono Bold — Labels</p>
+            <p style={{ fontFamily: "'PP Fraktion Mono', monospace", fontWeight: 700, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#1A1A18', margin: 0, lineHeight: 2 }}>BROWSER-BASED FM SOUND DESIGN INSTRUMENT</p>
+            <p style={{ fontFamily: "'PP Fraktion Mono', monospace", fontWeight: 700, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#AEABA4', margin: '8px 0 0', lineHeight: 2 }}>ATTACK · DECAY · SUSTAIN · RELEASE · CUTOFF · RESONANCE · WAVEFORM · RATIO · FEEDBACK · DETUNE</p>
+          </div>
+        </div>
       </section>
 
     </div>
