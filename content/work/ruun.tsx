@@ -1,4 +1,7 @@
 import type { Section } from '@/components/WorkTOC'
+import { RuunDemo } from '@/components/RuunDemo'
+import { ArticleLink } from '@/components/ArticleLink'
+import { TweenVsSpring } from '@/components/TweenVsSpring'
 
 export const sections: Section[] = [
   { id: 'overview',    label: 'Overview' },
@@ -6,7 +9,7 @@ export const sections: Section[] = [
   { id: 'spring',     label: 'Spring, Not Tween' },
   { id: 'api',        label: 'API Design' },
   { id: 'internals',  label: 'Under the Hood' },
-  { id: 'in-the-wild', label: 'In the Wild' },
+  { id: 'playground', label: 'Playground' },
 ]
 
 const prose: React.CSSProperties = {
@@ -45,16 +48,27 @@ export default function RuunContent() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 80 }}>
 
+      <div>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 10,
+          background: 'rgba(26,26,24,0.05)',
+          borderRadius: 6,
+          padding: '9px 14px',
+        }}>
+          <span style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 11, color: '#888884', letterSpacing: '0.04em' }}>$</span>
+          <span style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 11, color: '#1A1A18', letterSpacing: '0.04em' }}>npm install getruun</span>
+        </div>
+        <ArticleLink href="https://www.npmjs.com/package/getruun" label="View on npm" />
+      </div>
+
       <section id="overview">
         <hr style={divider} />
         <p style={sectionLabel}>Overview</p>
         <h2 style={sectionTitle}>SVG morphing with physical weight.</h2>
         <p style={prose}>
-          Ruun is a small JavaScript library for morphing between SVG paths using spring
-          physics. The premise: most SVG animation libraries treat path morphing as a
-          timing function — start here, end there, ease in-out. Ruun treats it as a
-          physical simulation. The result feels different in a way that's immediately
-          noticeable but difficult to articulate.
+          Ruun is a small JavaScript library for morphing between any two SVG paths using <strong>spring physics</strong>. Most SVG animation libraries treat path morphing as a timing function: a start point, an end point, and a deterministic easing curve. Ruun treats it as a physical simulation. The result feels less mechanical and brings life to SVGs in a noticeable but difficult to articulate way.
         </p>
         <p style={prose}>
           {/* YOUR TEXT: What made you build this? What problem were existing tools not solving? */}
@@ -74,6 +88,7 @@ export default function RuunContent() {
           {/* YOUR TEXT: What does a spring-morphed icon feel like vs a tweened one?
               How do you explain that to someone who hasn't felt it? */}
         </p>
+        <TweenVsSpring />
       </section>
 
       <section id="spring">
@@ -126,15 +141,18 @@ export default function RuunContent() {
         </p>
       </section>
 
-      <section id="in-the-wild">
+      <section id="playground">
         <hr style={divider} />
-        <p style={sectionLabel}>In the Wild</p>
-        <h2 style={sectionTitle}>Where it shows up.</h2>
+        <p style={sectionLabel}>Playground</p>
+        <h2 style={sectionTitle}>Try it yourself.</h2>
         <p style={prose}>
-          {/* YOUR TEXT: Where is ruun used? The portfolio back button, the resume
-              download→check morph, any other places. What does it feel like in context
-              vs in isolation? */}
+          Each preset changes the three physics parameters — stiffness, damping, and mass.
+          Click through them on the star and you'll feel the difference immediately: gentle
+          eases in slowly with no overshoot; wobbly overshoots and oscillates before
+          settling. The icon grid uses the smooth preset by default — click fast across
+          several to see velocity inherited mid-animation.
         </p>
+        <RuunDemo />
       </section>
 
     </div>

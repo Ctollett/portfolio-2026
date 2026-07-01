@@ -3,6 +3,7 @@ import type { Section } from '@/components/WorkTOC'
 import { VideoWithSound } from '@/components/VideoWithSound'
 import { OperatorPanelGrid } from '@/components/OperatorPanelGrid'
 import { GlobalPanelGrid } from '@/components/GlobalPanelGrid'
+import { ArticleLink } from '@/components/ArticleLink'
 
 export const sections: Section[] = [
   { id: 'overview',              label: 'Overview' },
@@ -477,6 +478,27 @@ function FormulaCallout() {
 export default function TX84Content() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 80 }}>
+
+      <div>
+        <a
+          href="https://www.musicradar.com/music-tech/plugins/the-biggest-driver-right-now-is-people-wanting-everything-fast-predicting-the-future-evolution-of-plugin-design"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 10,
+            textDecoration: 'none',
+          }}
+        >
+          <img src="/images/musicradar-logo-dark.svg" alt="MusicRadar" style={{ height: 14, display: 'block', flexShrink: 0 }} />
+          <div style={{ width: 1, height: 14, background: 'rgba(26,26,24,0.15)', flexShrink: 0 }} />
+          <span style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 11, letterSpacing: '0.04em', color: '#555559', lineHeight: 1 }}>
+            Initial research for this project was featured in MusicRadar
+          </span>
+        </a>
+        <ArticleLink href="https://www.musicradar.com/music-tech/plugins/the-biggest-driver-right-now-is-people-wanting-everything-fast-predicting-the-future-evolution-of-plugin-design" />
+      </div>
 
       <section id="overview">
         <hr style={divider} />
