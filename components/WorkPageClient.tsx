@@ -126,6 +126,7 @@ export function WorkPageClient({ item, slug }: Props) {
               {item.title}
             </h1>
             {item.liveUrl && <WorkLiveLink href={item.liveUrl} />}
+            {item.repoUrl && <WorkLiveLink href={item.repoUrl} label="View Code" />}
           </motion.div>
 
           <motion.div

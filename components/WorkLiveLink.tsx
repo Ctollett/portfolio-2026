@@ -7,7 +7,7 @@ const SPRING        = { stiffness: 320, damping: 22, mass: 1 }
 const CHEVRON_RIGHT = 'M9 18 L15 12 L9 6 M9 18 L15 12 L9 6'
 const ARROW_RIGHT   = 'M4 12 L12 12 L20 12 M15 7 L20 12 L15 17'
 
-export function WorkLiveLink({ href }: { href: string }) {
+export function WorkLiveLink({ href, label = 'View Live Site' }: { href: string; label?: string }) {
   const pathRef = useRef<SVGPathElement>(null)
 
   return (
@@ -31,7 +31,7 @@ export function WorkLiveLink({ href }: { href: string }) {
         lineHeight: 1,
         color: '#888884',
       }}>
-        View Live Site
+        {label}
       </span>
       <svg
         width="12"

@@ -497,7 +497,7 @@ export default function TX84Content() {
             Initial research for this project was featured in MusicRadar
           </span>
         </a>
-        <ArticleLink href="https://www.musicradar.com/music-tech/plugins/the-biggest-driver-right-now-is-people-wanting-everything-fast-predicting-the-future-evolution-of-plugin-design" />
+        <ArticleLink href="https://www.musicradar.com/music-tech/plugins/the-biggest-driver-right-now-is-people-wanting-everything-fast-predicting-the-future-evolution-of-plugin-design" variant="chevron" />
       </div>
 
       <section id="overview">

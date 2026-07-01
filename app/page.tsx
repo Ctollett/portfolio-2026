@@ -7,6 +7,7 @@ import type { CarouselCard } from "@/components/CardCarousel";
 import ThemeToggle from "@/components/ThemeToggle";
 import ScrollCue from "@/components/ScrollCue";
 import { NavBar } from "@/components/NavBar";
+import { IntroScreen } from "@/components/IntroScreen";
 
 const WORK_CARDS: CarouselCard[] = [
   { src: "/images/lab/fm-synth.svg",  video: "/videos/tx-84.mp4", slug: "tx-84",           label: "2024", title: "TX-84",           body: "Browser-Based Spatial Operator FM Synth" },
@@ -18,8 +19,21 @@ export default function Home() {
   const pageRef = useRef<HTMLDivElement>(null);
   const [dark, setDark] = useState(false);
   const [vw, setVw] = useState(1280);
-  const isFirstLoad = typeof window !== 'undefined' && !sessionStorage.getItem('intro-played');
-  const uiDelay = isFirstLoad ? 4.2 : 0.75;
+
+  const [shouldShowIntro, setShouldShowIntro] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
+  const showIntro = shouldShowIntro && !introDone;
+
+  useEffect(() => {
+    if (!sessionStorage.getItem('site-active')) {
+      setShouldShowIntro(true);
+    }
+  }, []);
+
+  const handleIntroDone = () => {
+    sessionStorage.setItem('site-active', '1');
+    setIntroDone(true);
+  };
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
@@ -37,8 +51,9 @@ export default function Home() {
 
   return (
     <div ref={pageRef} style={{ background: dark ? "#111110" : "#F4F2ED" }}>
+      {showIntro && <IntroScreen onDone={handleIntroDone} />}
 
-      <NavBar animDelay={uiDelay} onThemeToggle={() => setDark(d => !d)} />
+      <NavBar animDelay={0.4} onThemeToggle={() => setDark(d => !d)} />
 
       {/* Fixed shell — body only, carousel centered, bio bottom-left, copyright bottom-right */}
       <div style={{
@@ -53,8 +68,8 @@ export default function Home() {
           {/* Left column: name + copyright at bottom */}
           <m.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
+            animate={{ opacity: showIntro ? 0 : 1 }}
+            transition={{ duration: 0.4, delay: showIntro ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             style={{
               width: colW,
               flexShrink: 0,
@@ -83,14 +98,14 @@ export default function Home() {
 
           {/* Middle column: carousel */}
           <div style={{ flex: 1, position: "relative" }}>
-            <CardCarousel cards={WORK_CARDS} scrollRef={pageRef} />
+            <CardCarousel cards={WORK_CARDS} scrollRef={pageRef} ready={!showIntro} />
           </div>
 
           {/* Right column: social links + email pinned to bottom */}
           <m.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: uiDelay, ease: [0.25, 0.1, 0.25, 1] }}
+            animate={{ opacity: showIntro ? 0 : 1 }}
+            transition={{ duration: 0.4, delay: showIntro ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             style={{
               width: colW,
               flexShrink: 0,

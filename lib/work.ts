@@ -5,6 +5,7 @@ export interface WorkItem {
   type:        string
   description: string
   liveUrl?:    string
+  repoUrl?:    string
   video?:      string
   image?:      string
 }
@@ -25,7 +26,7 @@ export const workItems: WorkItem[] = [
     year:        '2026',
     type:        'SVG Spring Morph Library',
     description: 'Coming soon.',
-    liveUrl:     'https://example.com',
+    liveUrl:     'https://getruun.com',
     video:       '/videos/ruun.mp4',
   },
   {
@@ -34,7 +35,7 @@ export const workItems: WorkItem[] = [
     year:        '2025',
     type:        'Real-Time FM Synthesis in WebAssembly',
     description: 'Coming soon.',
-    liveUrl:     'https://example.com',
+    repoUrl:     'https://github.com/Ctollett/TX-84',
     video:       '/videos/WASM.mp4',
   },
 ]

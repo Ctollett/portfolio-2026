@@ -220,9 +220,11 @@ const FRAG = /* glsl */`
 export function CardCarousel({
   cards,
   scrollRef,
+  ready = true,
 }: {
   cards: CarouselCard[];
   scrollRef: RefObject<HTMLDivElement | null>;
+  ready?: boolean;
 }) {
   const router       = useRouter();
   const [activeIdx, setActiveIdx] = useState(0);
@@ -235,7 +237,8 @@ export function CardCarousel({
   const titleRef    = useRef<HTMLSpanElement>(null);
   const yearRef     = useRef<HTMLSpanElement>(null);
   const descRef     = useRef<HTMLSpanElement>(null);
-  const firstLoad   = typeof window !== 'undefined' && !sessionStorage.getItem('intro-played');
+  const readyRef    = useRef(ready);
+  useEffect(() => { readyRef.current = ready; }, [ready]);
 
   const getDisplayDims = () => {
     const vw = window.innerWidth;
@@ -440,16 +443,15 @@ export function CardCarousel({
 
       lenis.on("scroll", (e: { scroll: number }) => { scroll = e.scroll; });
 
-      // Slot-machine spin: only on first session load
+      // Slot-machine spin: runs when intro has been showing (ready starts false)
       const SNAP_LOOPS = 7;
       const snapOffset = (SNAP_LOOPS * cards.length + 2) * sectionH;
       const SNAP_DURATION = 3000;
       const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-      const isFirstLoad = !sessionStorage.getItem('intro-played');
-      let snapStartTime = isFirstLoad ? -1 : -2; // -1 = waiting, -2 = skip
+      const shouldSnap = !readyRef.current;
+      let snapStartTime = shouldSnap ? -1 : -2; // -1 = waiting for ready, -2 = skip
 
-      if (isFirstLoad) {
-        sessionStorage.setItem('intro-played', '1');
+      if (shouldSnap) {
         window.scrollTo(0, midScroll + snapOffset);
         scroll = midScroll + snapOffset;
       } else {
@@ -458,7 +460,7 @@ export function CardCarousel({
       }
 
       function raf(t: number) {
-        if (snapStartTime === -1) snapStartTime = t;
+        if (snapStartTime === -1 && readyRef.current) snapStartTime = t;
 
         const snapElapsed = t - snapStartTime;
         if (snapStartTime >= 0 && snapElapsed < SNAP_DURATION) {
@@ -610,8 +612,8 @@ export function CardCarousel({
       <m.canvas
         ref={canvasRef}
         initial={{ opacity: 0 }}
-        animate={{ opacity: canvasReady ? 1 : 0 }}
-        transition={{ duration: firstLoad ? 0.15 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+        animate={{ opacity: canvasReady && ready ? 1 : 0 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         style={{ position: "fixed", top: 0, left: 0, zIndex: 2, pointerEvents: "none" }}
       />
 
@@ -619,8 +621,8 @@ export function CardCarousel({
       {dims.vw >= 1080 && <m.div
         ref={titlePanelRef}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: firstLoad ? 2.8 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+        animate={{ opacity: ready ? 1 : 0 }}
+        transition={{ duration: 0.4, delay: ready ? 0.25 : 0, ease: [0.25, 0.1, 0.25, 1] }}
         style={{
           position: "fixed",
           top: "50%",
@@ -648,8 +650,8 @@ export function CardCarousel({
       {dims.vw >= 1080 && <m.div
         ref={descPanelRef}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: firstLoad ? 3.0 : 0.55, ease: [0.25, 0.1, 0.25, 1] }}
+        animate={{ opacity: ready ? 1 : 0 }}
+        transition={{ duration: 0.4, delay: ready ? 0.4 : 0, ease: [0.25, 0.1, 0.25, 1] }}
         style={{
           position: "fixed",
           top: "50%",
@@ -705,8 +707,8 @@ export function CardCarousel({
 
       <m.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: canvasReady ? 1 : 0 }}
-        transition={{ duration: firstLoad ? 0.15 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+        animate={{ opacity: canvasReady && ready ? 1 : 0 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         style={{
           position: "fixed",
           left: "50%",
