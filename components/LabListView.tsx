@@ -34,7 +34,7 @@ export function LabListView({ labs }: { labs: LabItem[] }) {
                   alignItems: "baseline",
                   gap: 24,
                   padding: "20px 0",
-                  borderBottom: "1px solid rgba(26,26,24,0.08)",
+                  borderBottom: "1px solid rgba(128,128,120,0.15)",
                   cursor: "pointer",
                 }}
                 onMouseEnter={e => (e.currentTarget.style.opacity = "0.5")}
@@ -53,7 +53,7 @@ export function LabListView({ labs }: { labs: LabItem[] }) {
                   fontFamily: "'MDUIXS', sans-serif",
                   fontSize: 14,
                   fontWeight: 400,
-                  color: "#1A1A18",
+                  color: "var(--text-primary)",
                 }}>
                   {lab.title}
                 </span>

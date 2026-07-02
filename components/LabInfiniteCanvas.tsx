@@ -31,8 +31,10 @@ const SQUISH_R        = 6.5;
 const SQUISH_LERP_IN  = 0.16;
 const SQUISH_LERP_OUT = 0.04;
 
-const BG_HEX = 0xF4F2ED;
-const BG_CSS = `#${BG_HEX.toString(16).padStart(6, '0')}`;
+const BG_LIGHT = 0xF4F2ED;
+const BG_DARK  = 0x111110;
+const getBgHex = () =>
+  document.documentElement.getAttribute('data-theme') === 'dark' ? BG_DARK : BG_LIGHT;
 
 // Card visual height in vh — used for snap-label positioning
 
@@ -150,7 +152,7 @@ export default function LabInfiniteCanvas({ labs }: { labs: LabItem[] }) {
       const renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(W, H);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(BG_HEX);
+      renderer.setClearColor(getBgHex());
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.domElement.style.touchAction = 'none';
       mountRef.current.appendChild(renderer.domElement);
@@ -202,7 +204,7 @@ export default function LabInfiniteCanvas({ labs }: { labs: LabItem[] }) {
       });
 
       const cardGeo  = new THREE.PlaneGeometry(CARD, CARD, SEGMENTS, SEGMENTS);
-      const bgColor  = new THREE.Color(BG_HEX);
+      const bgColor  = new THREE.Color(getBgHex());
       const pressVec = new THREE.Vector2(0, 0);
 
       for (let si = 0; si < GRID_N; si++) {
@@ -404,7 +406,19 @@ export default function LabInfiniteCanvas({ labs }: { labs: LabItem[] }) {
       };
       animate();
 
+      const themeObserver = new MutationObserver(() => {
+        const hex = getBgHex();
+        renderer.setClearColor(hex);
+        bgColor.set(hex);
+        for (let si = 0; si < GRID_N; si++)
+          for (let sj = 0; sj < GRID_N; sj++)
+            if (meshes[si]?.[sj])
+              (meshes[si][sj].material as THREE.ShaderMaterial).uniforms.bgColor.value.set(hex);
+      });
+      themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
       doCleanup = () => {
+        themeObserver.disconnect();
         el.removeEventListener('pointerdown',   onDown);
         el.removeEventListener('pointermove',   onMove);
         el.removeEventListener('pointerup',     onUp);
@@ -443,7 +457,7 @@ export default function LabInfiniteCanvas({ labs }: { labs: LabItem[] }) {
           style={{
             width: '100vw',
             height: '100vh',
-            background: BG_CSS,
+            background: 'var(--color-bg)',
             cursor: snapped && !isMobile ? 'pointer' : 'grab',
             userSelect: 'none',
           }}

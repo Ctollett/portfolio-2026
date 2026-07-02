@@ -155,10 +155,27 @@ html {
   display: none;
 }
 
+:root {
+  --nav-fg:      #1A1A18;
+  --nav-muted:   #888884;
+  --nav-faint:   #C9C6BF;
+  --nav-bar-bg:  transparent;
+  --frosted-bg:  rgba(244, 242, 237, 0.78);
+  --text-primary: #1A1A18;
+  --text-body:   #555559;
+}
+
 html[data-theme="dark"] {
   background: #111110;
-  --color-bg: #111110;
+  --color-bg:    #111110;
   --color-primary: #E8E5E1;
+  --nav-fg:      #E8E5E1;
+  --nav-muted:   #666663;
+  --nav-faint:   #3D3D3B;
+  --nav-bar-bg:  transparent;
+  --frosted-bg:  rgba(17, 17, 16, 0.92);
+  --text-primary: #E8E5E1;
+  --text-body:   #9A9994;
 }
 
 body {

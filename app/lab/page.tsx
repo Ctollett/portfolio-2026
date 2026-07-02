@@ -19,7 +19,7 @@ export default function LabPage() {
   }, []);
 
   return (
-    <main style={{ position: 'relative', width: '100vw', height: '100vh', overflow: view === 'list' ? 'auto' : 'hidden', background: '#F4F2ED' }}>
+    <main style={{ position: 'relative', width: '100vw', height: '100vh', overflow: view === 'list' ? 'auto' : 'hidden', background: 'var(--color-bg)' }}>
 
       <NavBar blur />
 
@@ -50,26 +50,35 @@ export default function LabPage() {
         display: 'flex',
         alignItems: 'center',
         gap: 12,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        backgroundColor: 'var(--frosted-bg)',
+        borderRadius: 8,
+        padding: '6px 12px',
       }}>
-        {(['grid', 'list'] as const).map((v) => (
           <button
-            key={v}
-            onClick={() => setView(v)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              fontFamily: "'MDUIXS', sans-serif",
-              fontSize: 9,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              color: view === v ? '#1A1A18' : '#888884',
-            }}
+            onClick={() => setView('grid')}
+            aria-label="Grid view"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: view === 'grid' ? 'var(--nav-fg)' : 'var(--nav-muted)' }}
           >
-            {v}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="0" y="0" width="6" height="6" rx="1" />
+              <rect x="8" y="0" width="6" height="6" rx="1" />
+              <rect x="0" y="8" width="6" height="6" rx="1" />
+              <rect x="8" y="8" width="6" height="6" rx="1" />
+            </svg>
           </button>
-        ))}
+          <button
+            onClick={() => setView('list')}
+            aria-label="List view"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: view === 'list' ? 'var(--nav-fg)' : 'var(--nav-muted)' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="0" y1="2.5"  x2="14" y2="2.5"  />
+              <line x1="0" y1="7"    x2="14" y2="7"    />
+              <line x1="0" y1="11.5" x2="14" y2="11.5" />
+            </svg>
+          </button>
       </div>}
 
       {view === 'grid'

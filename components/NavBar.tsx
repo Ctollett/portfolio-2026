@@ -31,7 +31,7 @@ const CHEVRON_DOUBLE = "M1 2 L7 8 L1 14 M7 2 L13 8 L7 14";
 
 const Logo = ({ onClick }: { onClick?: () => void }) => (
   <Link href="/" onClick={onClick} style={{ display: "flex", textDecoration: "none", pointerEvents: "auto" }}>
-    <svg width="28" height="20" viewBox="0 0 29 21" fill="none" stroke="#1A1A18" strokeWidth="1.1" strokeMiterlimit="10">
+    <svg width="28" height="20" viewBox="0 0 29 21" fill="none" stroke="var(--nav-fg)" strokeWidth="1.1" strokeMiterlimit="10">
       <path d="M8.47189 9.49798H0.5C0.5 9.49798 0.817269 1.26634 9.5 0.5V8.86104C9.5 8.86104 9.32329 9.4353 8.47189 9.5V9.49798Z"/>
       <path d="M8.47189 11.5H0.5C0.5 11.5 0.817269 19.7342 9.5 20.5V12.1378C9.5 12.1378 9.32329 11.563 8.47189 11.5Z"/>
       <path d="M16 20.5C18.4853 20.5 20.5 18.4853 20.5 16C20.5 13.5147 18.4853 11.5 16 11.5C13.5147 11.5 11.5 13.5147 11.5 16C11.5 18.4853 13.5147 20.5 16 20.5Z"/>
@@ -131,6 +131,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false, onThemeTog
     justifyContent: "space-between",
     alignItems: "center",
     padding: "18px 24px",
+    backgroundColor: "var(--nav-bar-bg)",
     ...(fixed ? {
       position: "fixed",
       top: 0,
@@ -140,7 +141,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false, onThemeTog
       ...(!isMobile && blur ? {
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        backgroundColor: "rgba(244, 242, 237, 0.8)",
+        backgroundColor: "var(--frosted-bg)",
       } : {}),
     } : {}),
   };
@@ -167,7 +168,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false, onThemeTog
               inset: 0,
               backdropFilter: "blur(52px)",
               WebkitBackdropFilter: "blur(52px)",
-              backgroundColor: "rgba(244, 242, 237, 0.78)",
+              backgroundColor: "var(--frosted-bg)",
             }} />
           </div>
         )}
@@ -196,7 +197,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false, onThemeTog
                   fontSize: 12,
                   fontWeight: 400,
                   letterSpacing: "0.14em",
-                  color: pathname === item.href ? "#1A1A18" : "#888884",
+                  color: pathname === item.href ? 'var(--nav-fg)' : 'var(--nav-muted)',
                   textDecoration: "none",
                 }}
               >
@@ -235,7 +236,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false, onThemeTog
             height="24"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#1A1A18"
+            stroke="var(--nav-fg)"
             strokeWidth="1.75"
           >
             <path ref={iconRef} d={HAMBURGER} />
@@ -254,7 +255,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false, onThemeTog
             style={{
               position: "fixed",
               inset: 0,
-              background: "#F4F2ED",
+              background: "var(--color-bg)",
               zIndex: 100,
               display: "flex",
               flexDirection: "column",
@@ -309,7 +310,7 @@ export function NavBar({ animDelay = 0.4, fixed = true, blur = false, onThemeTog
                       fontSize: 20,
                       fontWeight: 400,
                       letterSpacing: "0.12em",
-                      color: pathname === item.href || targetHref === item.href ? "#1A1A18" : "#C9C6BF",
+                      color: pathname === item.href || targetHref === item.href ? 'var(--nav-fg)' : 'var(--nav-faint)',
                       textDecoration: "none",
                       lineHeight: 1.6,
                       display: "flex",

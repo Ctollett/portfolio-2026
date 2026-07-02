@@ -17,7 +17,6 @@ const WORK_CARDS: CarouselCard[] = [
 
 export default function Home() {
   const pageRef = useRef<HTMLDivElement>(null);
-  const [dark, setDark] = useState(false);
   const [vw, setVw] = useState(1280);
 
   const [shouldShowIntro, setShouldShowIntro] = useState(false);
@@ -36,10 +35,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-  }, [dark]);
-
-  useEffect(() => {
     setVw(window.innerWidth);
     const onResize = () => setVw(window.innerWidth);
     window.addEventListener('resize', onResize);
@@ -48,12 +43,11 @@ export default function Home() {
 
   const colW = vw < 1080 ? 0 : vw < 1400 ? Math.round((vw - 480) / 2 * 0.7) : 360;
 
-
   return (
-    <div ref={pageRef} style={{ background: dark ? "#111110" : "#F4F2ED" }}>
+    <div ref={pageRef} style={{ background: 'var(--color-bg)' }}>
       {showIntro && <IntroScreen onDone={handleIntroDone} />}
 
-      <NavBar animDelay={0.4} onThemeToggle={() => setDark(d => !d)} />
+      <NavBar animDelay={0.4} />
 
       {/* Fixed shell — body only, carousel centered, bio bottom-left, copyright bottom-right */}
       <div style={{
@@ -87,12 +81,12 @@ export default function Home() {
                 margin: 0,
                 fontFamily: "'MDUIXS', sans-serif",
                 fontSize: 8,
-                color: "#555559",
+                color: "var(--nav-muted)",
                 letterSpacing: "0.02em",
               }}>
                 © Colton Tollett 2026
               </p>
-              <ThemeToggle onToggle={() => setDark(d => !d)} />
+              <ThemeToggle />
             </div>
           </m.div>
 
@@ -135,7 +129,7 @@ export default function Home() {
                       fontSize: 8,
                       fontWeight: 400,
                       letterSpacing: "0.14em",
-                            color: "#555559",
+                      color: "var(--nav-muted)",
                       textDecoration: "none",
                       lineHeight: 2,
                       pointerEvents: "auto",
@@ -154,7 +148,7 @@ export default function Home() {
                   fontSize: 8,
                   fontWeight: 400,
                   letterSpacing: "0.08em",
-                  color: "#555559",
+                  color: "var(--nav-muted)",
                   textDecoration: "none",
                   lineHeight: 2,
                   pointerEvents: "auto",

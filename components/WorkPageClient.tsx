@@ -44,7 +44,7 @@ export function WorkPageClient({ item, slug }: Props) {
   }, [])
 
   return (
-    <div style={{ background: '#F4F2ED', minHeight: '100vh' }}>
+    <div style={{ background: 'var(--color-bg)', minHeight: '100vh' }}>
 
       <NavBar blur animDelay={0.6} />
 
