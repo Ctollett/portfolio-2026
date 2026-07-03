@@ -82,9 +82,6 @@ export default function AboutPage() {
               >
                 MusicRadar
               </a>
-              <span style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 10, letterSpacing: "0.12em", color: "var(--text-primary)" }}>
-                BestDesignsOnX
-              </span>
             </div>
           </div>
 

@@ -13,11 +13,11 @@ export interface WorkItem {
 export const workItems: WorkItem[] = [
   {
     slug:        'tx-84',
-    title:       'TX-84',
+    title:       'TX-04',
     year:        '2024',
     type:        'Browser-Based Spatial Operator FM Synth',
     description: 'Coming soon.',
-    liveUrl:     'https://example.com',
+    liveUrl:     'https://www.tx-04.com',
     video:       '/videos/tx-84.mp4',
   },
   {

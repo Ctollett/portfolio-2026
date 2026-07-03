@@ -505,7 +505,7 @@ export default function TX84Content() {
         <p style={sectionLabel}>Overview</p>
         <h2 style={sectionTitle}>FM synthesis, made spatial.</h2>
         <p style={prose}>
-          The TX-84 is a polyphonic FM synthesizer that runs entirely in the browser. FM synthesis is notoriously difficult to control intuitively and has a long history of sparking confusion and inaccessibility for both beginners and experienced musicians. In a typical FM interface, operators, ratios, and modulation depths are buried in a matrix of numbers that offer very little physical connection to the sound. The TX-84 explores what happens when FM synthesis becomes something you can see, touch, and play.
+          The TX-04 is a polyphonic FM synthesizer that runs entirely in the browser. FM synthesis is notoriously difficult to control intuitively and has a long history of sparking confusion and inaccessibility for both beginners and experienced musicians. In a typical FM interface, operators, ratios, and modulation depths are buried in a matrix of numbers that offer very little physical connection to the sound. The TX-04 explores what happens when FM synthesis becomes something you can see, touch, and play.
         </p>
       </section>
 
@@ -514,11 +514,11 @@ export default function TX84Content() {
         <p style={sectionLabel}>The Canvas</p>
         <h2 style={sectionTitle}>A routing system you draw by hand.</h2>
         <p style={prose}>
-          The canvas is the core of TX-84. Four operator nodes sit in a default diamond arrangement on a 1200 by 720 pixel field. Each node has two interaction zones: drag from the center to reposition it, drag from the outer dashed ring to draw a connection to another operator. That connection establishes a modulator-carrier relationship. The routing structure of your patch is literally the shape you draw.
+          The canvas is the core of TX-04. Four operator nodes sit in a default diamond arrangement on a 1200 by 720 pixel field. Each node has two interaction zones: drag from the center to reposition it, drag from the outer dashed ring to draw a connection to another operator. That connection establishes a modulator-carrier relationship. The routing structure of your patch is literally the shape you draw.
         </p>
         <img
           src="/images/work/tx-84/canvas.png"
-          alt="TX-84 canvas showing four operator nodes in default diamond layout"
+          alt="TX-04 canvas showing four operator nodes in default diamond layout"
           style={{ width: '100%', borderRadius: 8, margin: '8px 0 20px' }}
         />
         <p style={prose}>
@@ -539,7 +539,7 @@ export default function TX84Content() {
         <p style={sectionLabel}>Reading Your Drawing</p>
         <h2 style={sectionTitle}>The system meets you where you are.</h2>
         <p style={prose}>
-          Most FM synthesizers ask you to choose a routing algorithm from a numbered list. The TX-84 does the opposite. You draw connections freely, and the system determines which FM algorithm your drawing most closely resembles, then routes the synthesis engine accordingly. You never select an algorithm directly.
+          Most FM synthesizers ask you to choose a routing algorithm from a numbered list. The TX-04 does the opposite. You draw connections freely, and the system determines which FM algorithm your drawing most closely resembles, then routes the synthesis engine accordingly. You never select an algorithm directly.
         </p>
         <AlgorithmMatchDiagram />
         <JaccardBreakdown />
@@ -720,7 +720,7 @@ export default function TX84Content() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div style={{ borderRadius: 8, border: '1px solid rgba(26,26,24,0.1)', padding: '24px 28px' }}>
             <p style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6E6C67', margin: '0 0 16px' }}>Söhne Buch — Display & Body</p>
-            <p style={{ fontFamily: "'Söhne', sans-serif", fontWeight: 400, fontSize: 52, letterSpacing: '0.02em', color: '#1A1A18', margin: 0, lineHeight: 1 }}>TX-84</p>
+            <p style={{ fontFamily: "'Söhne', sans-serif", fontWeight: 400, fontSize: 52, letterSpacing: '0.02em', color: '#1A1A18', margin: 0, lineHeight: 1 }}>TX-04</p>
             <p style={{ fontFamily: "'Söhne', sans-serif", fontWeight: 400, fontSize: 22, letterSpacing: '0.01em', color: '#555559', margin: '16px 0 0', lineHeight: 1.5 }}>Sound design at the node level.</p>
           </div>
           <div style={{ borderRadius: 8, border: '1px solid rgba(26,26,24,0.1)', padding: '24px 28px' }}>

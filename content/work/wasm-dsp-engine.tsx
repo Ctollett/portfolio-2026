@@ -56,13 +56,13 @@ export default function WasmDspContent() {
         <p style={prose}>
           The WASM DSP Engine is a polyphonic FM synthesis engine written in Rust,
           compiled to WebAssembly, and designed to run in real time inside a browser
-          audio worklet. It powers <a href="/work/tx-84" style={{ color: '#1A1A18', textDecoration: 'underline', textDecorationColor: 'rgba(26,26,24,0.25)', textUnderlineOffset: 3 }}>TX-84</a> but
+          audio worklet. It powers <a href="/work/tx-84" style={{ color: '#1A1A18', textDecoration: 'underline', textDecorationColor: 'rgba(26,26,24,0.25)', textUnderlineOffset: 3 }}>TX-04</a> but
           exists as a standalone layer, with the synthesis logic fully decoupled from
           the UI above it.
         </p>
         <p style={prose}>
           {/* YOUR TEXT: What was the motivation for building this as a separate,
-              standalone engine rather than coupling it to TX-84? */}
+              standalone engine rather than coupling it to TX-04? */}
         </p>
       </section>
 
@@ -173,7 +173,7 @@ export default function WasmDspContent() {
           monophonic instrument with glide actually feels.
         </p>
         <p style={prose}>
-          {/* YOUR TEXT: How did these choices affect the feel of playing TX-84?
+          {/* YOUR TEXT: How did these choices affect the feel of playing TX-04?
               Was there anything about the voice behavior you had to tune by feel
               rather than by spec? */}
         </p>

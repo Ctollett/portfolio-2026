@@ -28,7 +28,7 @@ export function ResumeButton() {
 
   return (
     <a
-      href="/about/resume.pdf"
+      href="/ColtonTollett-Resume.pdf"
       download
       onClick={handleClick}
       style={{
