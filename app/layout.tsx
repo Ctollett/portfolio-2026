@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import MotionProvider from "@/components/MotionProvider";
 import GrainOverlay from "@/components/GrainOverlay";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Colton Tollett - Design Engineer",
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </MotionProvider>
         <GrainOverlay />
+        <Analytics />
       </body>
     </html>
   );
