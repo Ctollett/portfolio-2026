@@ -52,7 +52,7 @@ export default function AboutPage() {
 
           {/* Bio */}
           <p style={{ fontFamily: "'MDUIXS', sans-serif", fontSize: 13, fontWeight: 400, lineHeight: 1.85, color: "var(--text-body)", margin: "0 0 32px" }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            I've been working in design for over nine years across graphic, visual, digital, and UI/UX. Over the last few years I've pulled that background into engineering, and I'm currently finishing an MS in Computer Science at Georgia Tech with a specialization in HCI. Most of what I build sits at the intersection of design and code, specifically developer tools and creative tooling where the interface is as much a part of the product as what's underneath it.
           </p>
 
           {/* Open for work + Resume */}
