@@ -273,8 +273,9 @@ export function CardCarousel({
     const isMobile = window.innerWidth < 1080;
     let cardStep   = isMobile ? Math.round(vh * 0.38) : CARD_STEP;
     const sectionH = Math.round(vh * (isMobile ? 0.75 : 0.7));
-    const totalH   = cards.length * sectionH * LOOPS;
-    const midScroll = Math.floor(LOOPS / 2) * cards.length * sectionH;
+    const loops    = isMobile ? 60 : LOOPS;
+    const totalH   = cards.length * sectionH * loops;
+    const midScroll = Math.floor(loops / 2) * cards.length * sectionH;
 
     if (scrollRef.current) scrollRef.current.style.minHeight = `${vh + totalH}px`;
     window.scrollTo(0, midScroll);
@@ -295,7 +296,7 @@ export function CardCarousel({
         powerPreference: "high-performance",
       });
       renderer.setSize(window.innerWidth, vh);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
 
       const scene  = new THREE.Scene();
@@ -332,7 +333,7 @@ export function CardCarousel({
         )
       );
 
-      // Video textures
+      // Video textures — with timeout so a stalled video never blocks init
       await Promise.all(
         [...new Set(padded.filter(c => !!c.video).map(c => c.video!))].map(
           (src) =>
@@ -342,16 +343,24 @@ export function CardCarousel({
               vid.muted       = true;
               vid.loop        = true;
               vid.playsInline = true;
+              vid.preload     = "metadata";
               videoMap.set(src, vid);
-              vid.addEventListener("loadedmetadata", () => {
+
+              const done = () => {
+                clearTimeout(timer);
                 const tex = new THREE.VideoTexture(vid);
                 tex.colorSpace = THREE.SRGBColorSpace;
                 tex.minFilter  = THREE.LinearFilter;
                 tex.magFilter  = THREE.LinearFilter;
                 textures[src]   = tex;
-                texAspects[src] = vid.videoWidth / vid.videoHeight;
+                texAspects[src] = vid.videoWidth / vid.videoHeight || 16 / 9;
                 resolve();
-              }, { once: true });
+              };
+
+              // Fallback: resolve after 6s even if metadata never fires
+              const timer = setTimeout(resolve, 6000);
+              vid.addEventListener("loadedmetadata", done, { once: true });
+              vid.addEventListener("error", () => { clearTimeout(timer); resolve(); }, { once: true });
               vid.load();
             })
         )
@@ -444,7 +453,7 @@ export function CardCarousel({
       lenis.on("scroll", (e: { scroll: number }) => { scroll = e.scroll; });
 
       // Slot-machine spin: runs when intro has been showing (ready starts false)
-      const SNAP_LOOPS = 7;
+      const SNAP_LOOPS = isMobile ? 3 : 7;
       const snapOffset = (SNAP_LOOPS * cards.length + 2) * sectionH;
       const SNAP_DURATION = 3000;
       const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
