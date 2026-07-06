@@ -48,11 +48,10 @@ export function WorkPageClient({ item, slug }: Props) {
 
       <NavBar blur animDelay={0.6} />
 
-      {/* Sidebar animates its own opacity inside the component */}
-      <WorkSidebar sections={sections} animDelay={0.6} />
+      {!isMobile && <WorkSidebar sections={sections} animDelay={0.6} />}
 
       {/* Centered content column */}
-      <div style={{ maxWidth: 640, margin: '0 auto', padding: `${isMobile ? 140 : 120}px 32px 50vh` }}>
+      <div style={{ maxWidth: 640, margin: '0 auto', padding: `${isMobile ? 100 : 120}px ${isMobile ? 20 : 32}px 50vh` }}>
 
         {/* Mobile back button */}
         {isMobile && (
@@ -101,9 +100,10 @@ export function WorkPageClient({ item, slug }: Props) {
         {/* Title + metadata row — bottom-aligned, with divider */}
         <div style={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
-          alignItems: 'flex-end',
+          alignItems: isMobile ? 'flex-start' : 'flex-end',
+          gap: isMobile ? 20 : 0,
           paddingBottom: 48,
           marginBottom: 64,
           borderBottom: '1px solid rgba(26,26,24,0.08)',
@@ -116,10 +116,10 @@ export function WorkPageClient({ item, slug }: Props) {
           >
             <h1 style={{
               fontFamily: "'Canela', serif",
-              fontSize: 40,
+              fontSize: isMobile ? 30 : 40,
               fontWeight: 300,
               fontStyle: 'italic',
-              color: isMobile ? '#C0582A' : '#1A1A18',
+              color: '#1A1A18',
               margin: 0,
               lineHeight: 1,
             }}>
@@ -133,7 +133,7 @@ export function WorkPageClient({ item, slug }: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.35, delay: 0.45, ease }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 8, textAlign: 'right' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8, textAlign: isMobile ? 'left' : 'right' }}
           >
             <p style={{
               fontFamily: "'MDUIXS', sans-serif",

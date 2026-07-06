@@ -167,7 +167,7 @@ export function TweenVsSpring() {
   return (
     <div style={{
       borderRadius: 10,
-      padding: '36px 32px',
+      padding: '36px clamp(16px, 5vw, 32px)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -179,7 +179,7 @@ export function TweenVsSpring() {
       ].join(', '),
       backgroundSize: '22px 22px',
     }}>
-      <div style={{ display: 'flex', gap: 48 }}>
+      <div style={{ display: 'flex', gap: 'clamp(20px, 6vw, 48px)', flexWrap: 'wrap', justifyContent: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
           <p style={labelStyle('tween')}>Tween (ease, 600ms)</p>
           <svg viewBox="0 0 100 100" width={SVG_SIZE} height={SVG_SIZE}>

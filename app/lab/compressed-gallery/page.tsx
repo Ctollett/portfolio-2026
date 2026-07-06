@@ -8,13 +8,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const ITEMS = [
-  { src: "/compressed-gallery/1.jpg", title: "Last Mile",     label: "Highway at dusk",     ambient: "#EDE8DF" },
-  { src: "/compressed-gallery/2.jpg", title: "Blue Hour",     label: "Motel pool",           ambient: "#DDE4ED" },
-  { src: "/compressed-gallery/3.jpg", title: "Still Morning", label: "Fog over the hills",   ambient: "#E2E8E2" },
-  { src: "/compressed-gallery/4.jpg", title: "Intermission",  label: "Drive-in, off season", ambient: "#EDE4D6" },
-  { src: "/compressed-gallery/5.jpg", title: "Outside In",    label: "Rain on glass",        ambient: "#DDE2EA" },
-  { src: "/compressed-gallery/6.jpg", title: "General",       label: "Afternoon light",      ambient: "#EDE7DC" },
-  { src: "/compressed-gallery/7.jpg", title: "Off Season",    label: "Empty outfield",       ambient: "#E8E4DC" },
+  { src: "/compressed-gallery/1.jpg", title: "Last Mile",     label: "Highway at dusk",     ambient: "#E8D4B0" },
+  { src: "/compressed-gallery/2.jpg", title: "Blue Hour",     label: "Motel pool",           ambient: "#B8CCE4" },
+  { src: "/compressed-gallery/3.jpg", title: "Still Morning", label: "Fog over the hills",   ambient: "#C0D4C0" },
+  { src: "/compressed-gallery/4.jpg", title: "Intermission",  label: "Drive-in, off season", ambient: "#EAC898" },
+  { src: "/compressed-gallery/5.jpg", title: "Outside In",    label: "Rain on glass",        ambient: "#B4C8DC" },
+  { src: "/compressed-gallery/6.jpg", title: "General",       label: "Afternoon light",      ambient: "#E4C8A0" },
+  { src: "/compressed-gallery/7.jpg", title: "Off Season",    label: "Empty outfield",       ambient: "#C4B0D8" },
 ];
 
 const N            = ITEMS.length;

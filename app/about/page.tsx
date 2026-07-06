@@ -19,6 +19,7 @@ export default function AboutPage() {
       <main style={{
         position: "fixed",
         inset: 0,
+        zIndex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

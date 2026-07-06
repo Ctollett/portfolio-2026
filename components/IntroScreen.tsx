@@ -62,7 +62,7 @@ export function IntroScreen({ onDone }: { onDone: () => void }) {
         position: 'fixed',
         inset: 0,
         background: '#F4F2ED',
-        zIndex: 100,
+        zIndex: 200,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
