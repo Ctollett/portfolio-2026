@@ -475,7 +475,7 @@ function FormulaCallout() {
 
 // ── Main content ──────────────────────────────────────────────────────────────
 
-export default function TX84Content() {
+export default function TX04Content() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 80 }}>
 
@@ -517,7 +517,7 @@ export default function TX84Content() {
           The canvas is the core of TX-04. Four operator nodes sit in a default diamond arrangement on a 1200 by 720 pixel field. Each node has two interaction zones: drag from the center to reposition it, drag from the outer dashed ring to draw a connection to another operator. That connection establishes a modulator-carrier relationship. The routing structure of your patch is literally the shape you draw.
         </p>
         <img
-          src="/images/work/tx-84/canvas.png"
+          src="/images/work/tx-04/canvas.png"
           alt="TX-04 canvas showing four operator nodes in default diamond layout"
           style={{ width: '100%', borderRadius: 8, margin: '8px 0 20px' }}
         />
@@ -525,7 +525,7 @@ export default function TX84Content() {
           The canvas is built as a rendering hybrid. Operator nodes are DOM elements, connection lines live in a persistent SVG layer above them, and performance-critical updates (drag position, ring deformation, waveform animation) bypass React entirely. These run in dedicated requestAnimationFrame loops that write directly to DOM attributes and styles through refs, keeping the reconciler out of anything time-sensitive. The spring physics that pulls connected operators when you drag one works the same way: force accumulates based on distance from a natural resting length, velocity is damped each frame, and the loop cancels itself as soon as all motion falls below a threshold.
         </p>
         <video
-          src="/images/work/tx-84/canvas-connection.mov"
+          src="/images/work/tx-04/canvas-connection.mov"
           autoPlay
           muted
           loop
@@ -559,7 +559,7 @@ export default function TX84Content() {
           Every connection on the canvas has a depth, measuring how strongly one operator modulates another. That depth is not set with a knob or a number. It is determined by the physical distance between the two connected operators on the canvas. Pull them closer and the modulation deepens. Push them apart and it fades. The space itself becomes the parameter.
         </p>
         <VideoWithSound
-          src="/images/work/tx-84/spacial-example.mp4"
+          src="/images/work/tx-04/spacial-example.mp4"
           style={{ margin: '8px 0 0' }}
         />
         <FormulaCallout />
@@ -576,7 +576,7 @@ export default function TX84Content() {
           Clicking any operator on the canvas opens its detail panel. Each operator has its own independent controls for waveform, tuning, and modulation behavior, set separately from the routing structure drawn on the canvas.
         </p>
         <video
-          src="/images/work/tx-84/operator-controls.mp4"
+          src="/images/work/tx-04/operator-controls.mp4"
           autoPlay
           muted
           loop
@@ -594,7 +594,7 @@ export default function TX84Content() {
           The global panel runs below the canvas and shapes the patch as a whole. Where the operator controls are per-voice, these apply to the full output: amplitude envelope, filter, effects chain, and two routable LFOs.
         </p>
         <video
-          src="/images/work/tx-84/global-effects.mp4"
+          src="/images/work/tx-04/global-effects.mp4"
           autoPlay
           muted
           loop
@@ -654,7 +654,7 @@ export default function TX84Content() {
               }}
             >
               <img
-                src={`/images/work/tx-84/moodboard/${src}.jpg`}
+                src={`/images/work/tx-04/moodboard/${src}.jpg`}
                 alt=""
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
@@ -681,7 +681,7 @@ export default function TX84Content() {
               }}
             >
               <img
-                src={`/images/work/tx-84/moodboard/albums/${src}.jpg`}
+                src={`/images/work/tx-04/moodboard/albums/${src}.jpg`}
                 alt=""
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />

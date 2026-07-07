@@ -12,13 +12,13 @@ export interface WorkItem {
 
 export const workItems: WorkItem[] = [
   {
-    slug:        'tx-84',
+    slug:        'tx-04',
     title:       'TX-04',
     year:        '2024',
     type:        'Browser-Based Spatial Operator FM Synth',
     description: 'Coming soon.',
     liveUrl:     'https://www.tx-04.com',
-    video:       '/videos/tx-84.mp4',
+    video:       '/videos/tx-04.mp4',
   },
   {
     slug:        'ruun',
@@ -35,7 +35,7 @@ export const workItems: WorkItem[] = [
     year:        '2025',
     type:        'Real-Time FM Synthesis in WebAssembly',
     description: 'Coming soon.',
-    repoUrl:     'https://github.com/Ctollett/TX-84',
+    repoUrl:     'https://github.com/Ctollett/TX-04',
     video:       '/videos/WASM.mp4',
   },
 ]

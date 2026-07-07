@@ -10,7 +10,7 @@ import { NavBar } from "@/components/NavBar";
 import { IntroScreen } from "@/components/IntroScreen";
 
 const WORK_CARDS: CarouselCard[] = [
-  { src: "/images/lab/fm-synth.svg",  video: "/videos/tx-84.mp4", slug: "tx-84",           label: "2024", title: "TX-04",           body: "Browser-Based Spatial Operator FM Synth" },
+  { src: "/images/lab/fm-synth.svg",  video: "/videos/tx-04.mp4", slug: "tx-04",           label: "2024", title: "TX-04",           body: "Browser-Based Spatial Operator FM Synth" },
   { src: "/images/lab/svg-morph.svg", video: "/videos/ruun.mp4",  slug: "ruun",             label: "2026", title: "Ruun",            body: "SVG Spring Morph Library" },
   { src: "/images/lab/wasm-dsp.svg",  video: "/videos/WASM.mp4",  slug: "wasm-dsp-engine",  label: "2025", title: "WASM DSP Engine", body: "Real-Time FM Synthesis in WebAssembly" },
 ];

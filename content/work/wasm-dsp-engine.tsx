@@ -56,7 +56,7 @@ export default function WasmDspContent() {
         <p style={prose}>
           The WASM DSP Engine is a polyphonic FM synthesis engine written in Rust,
           compiled to WebAssembly, and designed to run in real time inside a browser
-          audio worklet. It powers <a href="/work/tx-84" style={{ color: '#1A1A18', textDecoration: 'underline', textDecorationColor: 'rgba(26,26,24,0.25)', textUnderlineOffset: 3 }}>TX-04</a> but
+          audio worklet. It powers <a href="/work/tx-04" style={{ color: '#1A1A18', textDecoration: 'underline', textDecorationColor: 'rgba(26,26,24,0.25)', textUnderlineOffset: 3 }}>TX-04</a> but
           exists as a standalone layer, with the synthesis logic fully decoupled from
           the UI above it.
         </p>

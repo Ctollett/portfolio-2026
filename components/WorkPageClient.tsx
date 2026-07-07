@@ -8,14 +8,14 @@ import { WorkLiveLink } from './WorkLiveLink'
 import { NavBar } from './NavBar'
 import type { Section } from './WorkTOC'
 import type { WorkItem } from '@/lib/work'
-import TX84Content,    { sections as tx84Sections }    from '@/content/work/tx-84'
+import TX04Content,    { sections as tx04Sections }    from '@/content/work/tx-04'
 import RuunContent,    { sections as ruunSections }    from '@/content/work/ruun'
 import WasmDspContent, { sections as wasmDspSections } from '@/content/work/wasm-dsp-engine'
 
 const ease = [0.25, 0.1, 0.25, 1] as const
 
 const contentMap: Record<string, { Component: React.ComponentType; sections: Section[] }> = {
-  'tx-84':           { Component: TX84Content,    sections: tx84Sections },
+  'tx-04':           { Component: TX04Content,    sections: tx04Sections },
   'ruun':            { Component: RuunContent,    sections: ruunSections },
   'wasm-dsp-engine': { Component: WasmDspContent, sections: wasmDspSections },
 }
