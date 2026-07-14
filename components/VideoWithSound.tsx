@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 function SoundOnIcon() {
   return (
@@ -25,6 +25,23 @@ function SoundOffIcon() {
 export function VideoWithSound({ src, style }: { src: string; style?: React.CSSProperties }) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [muted, setMuted] = useState(true)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const el = videoRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '400px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   const toggleSound = () => {
     const video = videoRef.current
@@ -38,11 +55,12 @@ export function VideoWithSound({ src, style }: { src: string; style?: React.CSSP
     <div style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', ...style }}>
       <video
         ref={videoRef}
-        src={src}
-        autoPlay
+        src={inView ? src : undefined}
+        autoPlay={inView}
         muted
         loop
         playsInline
+        preload="none"
         style={{ width: '100%', display: 'block' }}
       />
       <button

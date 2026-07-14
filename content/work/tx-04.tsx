@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Section } from '@/components/WorkTOC'
 import { VideoWithSound } from '@/components/VideoWithSound'
+import { LazyVideo } from '@/components/LazyVideo'
 import { OperatorPanelGrid } from '@/components/OperatorPanelGrid'
 import { GlobalPanelGrid } from '@/components/GlobalPanelGrid'
 import { ArticleLink } from '@/components/ArticleLink'
@@ -519,17 +520,15 @@ export default function TX04Content() {
         <img
           src="/images/work/tx-04/canvas.png"
           alt="TX-04 canvas showing four operator nodes in default diamond layout"
+          loading="lazy"
+          decoding="async"
           style={{ width: '100%', borderRadius: 8, margin: '8px 0 20px' }}
         />
         <p style={prose}>
           The canvas is built as a rendering hybrid. Operator nodes are DOM elements, connection lines live in a persistent SVG layer above them, and performance-critical updates (drag position, ring deformation, waveform animation) bypass React entirely. These run in dedicated requestAnimationFrame loops that write directly to DOM attributes and styles through refs, keeping the reconciler out of anything time-sensitive. The spring physics that pulls connected operators when you drag one works the same way: force accumulates based on distance from a natural resting length, velocity is damped each frame, and the loop cancels itself as soon as all motion falls below a threshold.
         </p>
-        <video
+        <LazyVideo
           src="/images/work/tx-04/canvas-connection.mov"
-          autoPlay
-          muted
-          loop
-          playsInline
           style={{ width: '100%', borderRadius: 8, margin: '8px 0 0', display: 'block' }}
         />
       </section>
@@ -575,12 +574,8 @@ export default function TX04Content() {
         <p style={prose}>
           Clicking any operator on the canvas opens its detail panel. Each operator has its own independent controls for waveform, tuning, and modulation behavior, set separately from the routing structure drawn on the canvas.
         </p>
-        <video
+        <LazyVideo
           src="/images/work/tx-04/operator-controls.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
           style={{ width: '100%', borderRadius: 8, margin: '8px 0 0', display: 'block' }}
         />
         <OperatorPanelGrid />
@@ -593,12 +588,8 @@ export default function TX04Content() {
         <p style={prose}>
           The global panel runs below the canvas and shapes the patch as a whole. Where the operator controls are per-voice, these apply to the full output: amplitude envelope, filter, effects chain, and two routable LFOs.
         </p>
-        <video
+        <LazyVideo
           src="/images/work/tx-04/global-effects.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
           style={{ width: '100%', borderRadius: 8, margin: '8px 0 0', display: 'block' }}
         />
         <GlobalPanelGrid />
@@ -656,6 +647,8 @@ export default function TX04Content() {
               <img
                 src={`/images/work/tx-04/moodboard/${src}.jpg`}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
             </div>
@@ -683,6 +676,8 @@ export default function TX04Content() {
               <img
                 src={`/images/work/tx-04/moodboard/albums/${src}.jpg`}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
             </div>
