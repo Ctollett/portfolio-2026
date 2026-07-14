@@ -528,7 +528,7 @@ export default function TX04Content() {
           The canvas is built as a rendering hybrid. Operator nodes are DOM elements, connection lines live in a persistent SVG layer above them, and performance-critical updates (drag position, ring deformation, waveform animation) bypass React entirely. These run in dedicated requestAnimationFrame loops that write directly to DOM attributes and styles through refs, keeping the reconciler out of anything time-sensitive. The spring physics that pulls connected operators when you drag one works the same way: force accumulates based on distance from a natural resting length, velocity is damped each frame, and the loop cancels itself as soon as all motion falls below a threshold.
         </p>
         <LazyVideo
-          src="/images/work/tx-04/canvas-connection.mov"
+          src="/images/work/tx-04/canvas-connection.mp4"
           style={{ width: '100%', borderRadius: 8, margin: '8px 0 0', display: 'block' }}
         />
       </section>
