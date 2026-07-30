@@ -6,6 +6,7 @@ import { useTexture } from "@react-three/drei";
 import Lenis from "lenis";
 import * as THREE from "three";
 import { morph } from "getruun";
+import { DesktopOnlyLab } from "@/components/DesktopOnlyLab";
 
 const SEE_MORE_SPRING = { stiffness: 320, damping: 22, mass: 1 };
 const CHEVRON_RIGHT = "M9 18 L15 12 L9 6 M9 18 L15 12 L9 6";
@@ -335,7 +336,7 @@ function Scene({ scrollRef, midScrollRef, labelRef, labelTitleRef, labelSubRef, 
   );
 }
 
-export default function ArcGallery() {
+function ArcGalleryContent() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -482,5 +483,13 @@ export default function ArcGallery() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ArcGallery() {
+  return (
+    <DesktopOnlyLab title="Arc Gallery">
+      <ArcGalleryContent />
+    </DesktopOnlyLab>
   );
 }
