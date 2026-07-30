@@ -32,7 +32,10 @@ const LABEL_OFFSET = 300;   // how far left of true screen-center the focused or
 const BASE_SIZE = 110;      // orb diameter at rest
 const FOCUS_SCALE = 2.7;    // multiplier applied to BASE_SIZE at dead-center
 const FOCUS_SPAN_DEG = 32;  // within this many degrees of center, scale ramps up
-const SCALE_SMOOTH = 0.09;  // per-frame ease toward the target scale — slower, more elegant grow
+// Underdamped spring on the focus scale — gives it a slow, weighty pop past
+// full size before settling, instead of a plain ease that can never overshoot.
+const SCALE_SPRING_K = 45;
+const SCALE_SPRING_DAMPING = 7.5;
 const EDGE_SHRINK_START = 70;
 const EDGE_SHRINK_END = 120;
 const FADE_START = 85;
@@ -40,10 +43,19 @@ const FADE_END = 130;
 const LABEL_FADE_START = 6;
 const LABEL_FADE_END = 16;
 
-const SECTION_PX = 280;     // scroll px per one item-step (one ANGLE_STEP of rotation)
+const SECTION_PX = 420;     // scroll px per one item-step (one ANGLE_STEP of rotation)
 const LOOPS = 200;          // repeats of the full ring — deep enough scroll range to feel infinite
 const SNAP_STRENGTH = 0.9;  // 0 = linear scroll, 1 = fully flat/stuck at dead-center
 const LOCK_SMOOTH = 0.16;   // per-frame ease toward the snapped target — lower is smoother/laggier
+
+// Bubble-like squash/stretch — each orb's screen-space velocity drives a
+// target elongation along its direction of travel; an underdamped spring
+// chases that target, so it overshoots and jiggles back to round when
+// scrolling stops instead of snapping straight to a circle.
+const STRETCH_VELOCITY_SCALE = 0.00012; // target stretch per px/s of velocity
+const MAX_STRETCH = 0.2;
+const STRETCH_SPRING_K = 90;
+const STRETCH_SPRING_DAMPING = 9;
 
 const BG_COLOR = "#EFEAE0";
 
@@ -57,10 +69,26 @@ function smoothstep(e0: number, e1: number, x: number) {
 // aberration/rim-light core, with the FBO background-passthrough and
 // behind-text shadow logic stripped out (nothing here to refract or shadow).
 const vertexShader = /* glsl */`
+  uniform vec2  uStretchDir;    // normalized direction of travel
+  uniform float uStretchAmount; // 0 = circle, can overshoot negative on settle
   varying vec2 vUv;
+
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+    vec2 dir  = uStretchDir;
+    vec2 perp = vec2(-dir.y, dir.x);
+    float along  = dot(position.xy, dir);
+    float across = dot(position.xy, perp);
+
+    // Area-conserving squash/stretch: elongate along the travel direction,
+    // compress across it by the inverse sqrt so the orb keeps its volume
+    // instead of just ballooning.
+    float stretchScale = 1.0 + uStretchAmount;
+    float squashScale  = 1.0 / sqrt(max(stretchScale, 0.2));
+    vec2 deformed = dir * along * stretchScale + perp * across * squashScale;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(deformed, position.z, 1.0);
   }
 `;
 
@@ -140,22 +168,36 @@ interface SceneProps {
   labelRef: React.RefObject<HTMLDivElement | null>;
   labelTitleRef: React.RefObject<HTMLParagraphElement | null>;
   labelSubRef: React.RefObject<HTMLParagraphElement | null>;
+  lineRef: React.RefObject<HTMLDivElement | null>;
 }
 
-function Scene({ scrollRef, midScrollRef, labelRef, labelTitleRef, labelSubRef }: SceneProps) {
+function Scene({ scrollRef, midScrollRef, labelRef, labelTitleRef, labelSubRef, lineRef }: SceneProps) {
   const { size } = useThree();
   const textures = useTexture(ITEMS.map((i) => i.src));
   const meshRefs = useRef<(THREE.Mesh | null)[]>([]);
   const matRefs = useRef<(THREE.ShaderMaterial | null)[]>([]);
   const geo = useMemo(() => new THREE.CircleGeometry(BASE_SIZE / 2, 64), []);
   const displayAngleRef = useRef(0);
+  const lineWidthRef = useRef(0);
   const scaleRefs = useRef<number[]>(new Array(N).fill(1));
+  const scaleVelRefs = useRef<number[]>(new Array(N).fill(0));
+
+  // Squash/stretch spring state, one per orb
+  const prevXRef = useRef<number[]>(new Array(N).fill(0));
+  const prevYRef = useRef<number[]>(new Array(N).fill(0));
+  const stretchAmountRef = useRef<number[]>(new Array(N).fill(0));
+  const stretchVelRef = useRef<number[]>(new Array(N).fill(0));
+  const stretchDirRef = useRef<{ x: number; y: number }[]>(
+    new Array(N).fill(null).map(() => ({ x: 1, y: 0 }))
+  );
 
   const uniformsList = useMemo(() => textures.map((tex) => ({
-    photoMap:   { value: tex },
-    uScroll:    { value: 0 },
-    uBgColor:   { value: new THREE.Color(BG_COLOR) },
-    uOpacity:   { value: 1 },
+    photoMap:      { value: tex },
+    uScroll:       { value: 0 },
+    uBgColor:      { value: new THREE.Color(BG_COLOR) },
+    uOpacity:      { value: 1 },
+    uStretchDir:   { value: new THREE.Vector2(1, 0) },
+    uStretchAmount: { value: 0 },
     uTexAspect: { value: (() => {
       const img = tex.image as HTMLImageElement | undefined;
       return img ? img.width / img.height : 0.75;
@@ -163,7 +205,8 @@ function Scene({ scrollRef, midScrollRef, labelRef, labelTitleRef, labelSubRef }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   })), [textures]);
 
-  useFrame(() => {
+  useFrame((_, rawDelta) => {
+    const dt = Math.min(rawDelta, 1 / 30);
     const vw = size.width;
     const vh = size.height;
 
@@ -209,8 +252,28 @@ function Scene({ scrollRef, midScrollRef, labelRef, labelTitleRef, labelSubRef }
       // Ease toward the target scale instead of snapping to it — the grow
       // into focus should trail behind the angle a little, not track it
       // rigidly, for a slower and more elegant expansion.
-      const smoothedScale = scaleRefs.current[i] + (targetScale - scaleRefs.current[i]) * SCALE_SMOOTH;
-      scaleRefs.current[i] = smoothedScale;
+      // Spring toward the target scale instead of a plain ease — lets it
+      // overshoot past full size and settle back for a bouncy "pop."
+      const scaleForce = SCALE_SPRING_K * (targetScale - scaleRefs.current[i]) - SCALE_SPRING_DAMPING * scaleVelRefs.current[i];
+      scaleVelRefs.current[i] += scaleForce * dt;
+      scaleRefs.current[i] += scaleVelRefs.current[i] * dt;
+      const smoothedScale = scaleRefs.current[i];
+
+      // Bubble squash/stretch: screen-space velocity sets the target
+      // elongation, an underdamped spring chases it so the orb overshoots
+      // and jiggles back to round rather than snapping straight there.
+      const vx = dt > 0 ? (xPx - prevXRef.current[i]) / dt : 0;
+      const vy = dt > 0 ? (yPx - prevYRef.current[i]) / dt : 0;
+      prevXRef.current[i] = xPx;
+      prevYRef.current[i] = yPx;
+      const speed = Math.hypot(vx, vy);
+      if (speed > 1) {
+        stretchDirRef.current[i] = { x: vx / speed, y: -vy / speed };
+      }
+      const targetStretch = Math.min(MAX_STRETCH, speed * STRETCH_VELOCITY_SCALE);
+      const stretchForce = STRETCH_SPRING_K * (targetStretch - stretchAmountRef.current[i]) - STRETCH_SPRING_DAMPING * stretchVelRef.current[i];
+      stretchVelRef.current[i] += stretchForce * dt;
+      stretchAmountRef.current[i] += stretchVelRef.current[i] * dt;
 
       const mesh = meshRefs.current[i];
       const mat = matRefs.current[i];
@@ -222,6 +285,8 @@ function Scene({ scrollRef, midScrollRef, labelRef, labelTitleRef, labelSubRef }
       if (mat) {
         mat.uniforms.uScroll.value = scrollRef.current;
         mat.uniforms.uOpacity.value = opacity;
+        mat.uniforms.uStretchAmount.value = stretchAmountRef.current[i];
+        (mat.uniforms.uStretchDir.value as THREE.Vector2).set(stretchDirRef.current[i].x, stretchDirRef.current[i].y);
       }
 
       if (absDeg < minAbsDeg) {
@@ -242,6 +307,12 @@ function Scene({ scrollRef, midScrollRef, labelRef, labelTitleRef, labelSubRef }
         if (labelTitleRef.current) labelTitleRef.current.textContent = item.location;
         if (labelSubRef.current) labelSubRef.current.textContent = `${item.city} · ${item.year}`;
       }
+      // Line waits until the title/subtitle are basically fully shown, then
+      // grows to halfway on its own gentler pace — a distinct second beat
+      // after the text reveal, not something that tracks it 1:1.
+      const lineTarget = labelOpacity > 0.85 ? 50 : 0;
+      lineWidthRef.current += (lineTarget - lineWidthRef.current) * 0.08;
+      if (lineRef.current) lineRef.current.style.width = `${lineWidthRef.current.toFixed(2)}%`;
     }
   });
 
@@ -270,6 +341,7 @@ export default function ArcGallery() {
   const labelRef = useRef<HTMLDivElement>(null);
   const labelTitleRef = useRef<HTMLParagraphElement>(null);
   const labelSubRef = useRef<HTMLParagraphElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
   const chevronRef = useRef<SVGPathElement>(null);
   const scrollRef = useRef(0);
   const midScrollRef = useRef(0);
@@ -287,7 +359,7 @@ export default function ArcGallery() {
     midScrollRef.current = midScroll;
     wrapper.scrollTop = midScroll;
 
-    const lenis = new Lenis({ wrapper, content, smoothWheel: true, lerp: 0.1, wheelMultiplier: 1 });
+    const lenis = new Lenis({ wrapper, content, smoothWheel: true, lerp: 0.08, wheelMultiplier: 0.7 });
     lenis.on("scroll", ({ scroll }: { scroll: number }) => {
       scrollRef.current = scroll;
     });
@@ -334,6 +406,7 @@ export default function ArcGallery() {
                 labelRef={labelRef}
                 labelTitleRef={labelTitleRef}
                 labelSubRef={labelSubRef}
+                lineRef={lineRef}
               />
             </Suspense>
           </Canvas>
@@ -361,9 +434,10 @@ export default function ArcGallery() {
               fontSize: 12,
               letterSpacing: "0.08em",
               color: "#8A8479",
-              margin: "0 0 8px",
+              margin: "0 0 12px",
               whiteSpace: "nowrap",
             }} />
+            <div ref={lineRef} style={{ width: 0, height: 1, background: "rgba(26,23,20,0.16)", margin: "0 0 12px" }} />
             <button
               onMouseEnter={() => chevronRef.current && morph(chevronRef.current, ARROW_RIGHT, SEE_MORE_SPRING)}
               onMouseLeave={() => chevronRef.current && morph(chevronRef.current, CHEVRON_RIGHT, SEE_MORE_SPRING)}
@@ -372,9 +446,11 @@ export default function ArcGallery() {
                 alignItems: "center",
                 gap: 4,
                 background: "none",
-                border: "1px solid rgba(26,23,20,0.16)",
-                borderRadius: 8,
-                padding: "4px 12px",
+                border: "none",
+                paddingTop: 8,
+                paddingRight: 12,
+                paddingBottom: 8,
+                paddingLeft: 0,
                 cursor: "pointer",
                 pointerEvents: "auto",
               }}

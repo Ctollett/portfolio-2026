@@ -11,6 +11,7 @@ export interface LabItem {
 }
 
 const labs: Omit<LabItem, 'id' | 'number' | 'iframeUrl'>[] = [
+  { slug: 'arc-gallery',              title: 'Arc Gallery',       description: 'Scroll-locked arc of glass-orb photos with refracted focus',        date: '2026-07-30', codeUrl: '', previewVideo: '' },
   { slug: 'compressed-gallery',      title: 'Compressed Gallery', description: 'Scroll-driven vertical gallery with accordion compression',             date: '2026-07-05', codeUrl: '', previewVideo: '' },
   { slug: 'card-lift',               title: 'Card Lift',        description: 'Infinite scroll carousel with Three.js cloth physics',              date: '2026-06-11', codeUrl: '', previewVideo: '/previews/card-lift.mp4' },
   { slug: 'image-cube',              title: 'Image Cube',       description: '3D architecture gallery cube with scroll, drag, and category flip', date: '2026-06-16', codeUrl: '', previewVideo: '/previews/image-cube.mp4' },
