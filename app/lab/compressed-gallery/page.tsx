@@ -8,13 +8,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const ITEMS = [
-  { src: "/compressed-gallery/1.jpg", title: "Last Mile",     label: "Highway at dusk",     ambient: "#E8D4B0" },
-  { src: "/compressed-gallery/2.jpg", title: "Blue Hour",     label: "Motel pool",           ambient: "#B8CCE4" },
-  { src: "/compressed-gallery/3.jpg", title: "Still Morning", label: "Fog over the hills",   ambient: "#C0D4C0" },
-  { src: "/compressed-gallery/4.jpg", title: "Intermission",  label: "Drive-in, off season", ambient: "#EAC898" },
-  { src: "/compressed-gallery/5.jpg", title: "Outside In",    label: "Rain on glass",        ambient: "#B4C8DC" },
-  { src: "/compressed-gallery/6.jpg", title: "General",       label: "Afternoon light",      ambient: "#E4C8A0" },
-  { src: "/compressed-gallery/7.jpg", title: "Off Season",    label: "Empty outfield",       ambient: "#C4B0D8" },
+  { src: "/compressed-gallery/1.jpg", title: "Last Mile",     label: "Highway at dusk" },
+  { src: "/compressed-gallery/2.jpg", title: "Blue Hour",     label: "Motel pool" },
+  { src: "/compressed-gallery/3.jpg", title: "Still Morning", label: "Fog over the hills" },
+  { src: "/compressed-gallery/4.jpg", title: "Intermission",  label: "Drive-in, off season" },
+  { src: "/compressed-gallery/5.jpg", title: "Outside In",    label: "Rain on glass" },
+  { src: "/compressed-gallery/6.jpg", title: "General",       label: "Afternoon light" },
+  { src: "/compressed-gallery/7.jpg", title: "Off Season",    label: "Empty outfield" },
 ];
 
 const N            = ITEMS.length;
@@ -41,8 +41,7 @@ export default function CompressedGallery() {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
-    scroller.style.height          = `${(N - 1) * SCROLL_STEP + window.innerHeight}px`;
-    scroller.style.backgroundColor = ITEMS[0].ambient;
+    scroller.style.height = `${(N - 1) * SCROLL_STEP + window.innerHeight}px`;
 
     const lenis = new Lenis({
       duration: 2.4,
@@ -68,6 +67,7 @@ export default function CompressedGallery() {
         if (img) {
           img.style.opacity   = `${fadeT}`;
           img.style.transform = `translateY(${-PARALLAX_AMT * (1 - eased)}px)`;
+          img.style.filter    = `grayscale(${(1 - eased) * 100}%)`;
         }
 
         const text = textRefs.current[i];
@@ -76,12 +76,6 @@ export default function CompressedGallery() {
 
       if (activeIndex !== activeIndexRef.current) {
         activeIndexRef.current = activeIndex;
-
-        gsap.to(scroller, {
-          backgroundColor: ITEMS[activeIndex].ambient,
-          duration: 1.0,
-          ease: "power2.out",
-        });
 
         dotRefs.current.forEach((dot, i) => {
           if (!dot) return;
@@ -147,7 +141,7 @@ export default function CompressedGallery() {
               style={{
                 width:        IMG_W,
                 height:       COMPRESSED_H,
-                borderRadius: 3,
+                borderRadius: 16,
                 flexShrink:   0,
                 overflow:     "hidden",
                 position:     "relative",
@@ -165,6 +159,7 @@ export default function CompressedGallery() {
                   objectPosition: "center",
                   display:        "block",
                   opacity:        0,
+                  filter:         "grayscale(100%)",
                 }}
               />
               <div

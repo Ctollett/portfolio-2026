@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useRouter } from "next/navigation";
 import type { RefObject } from "react";
@@ -265,7 +265,7 @@ export function CardCarousel({
   cardsRef.current  = cards;
   paddedRef.current = padded;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const cards  = cardsRef.current;
     const padded = paddedRef.current;
 
