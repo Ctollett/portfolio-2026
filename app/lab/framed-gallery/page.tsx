@@ -7,16 +7,130 @@ import * as THREE from "three";
 
 const IMAGES = [
   {
-    src: "/framed-gallery/eye-macro-1.png",
-    title: "Iris Study",
-    description: "Extreme close detail, found footage",
-    meta: "REC ● 00:07:14",
+    src: "/framed-gallery/statue-face-1.png",
+    title: "Marble Face I",
+    description: "Weathered bust, extreme detail",
+    meta: "REC ● 00:11:48",
   },
   {
-    src: "/framed-gallery/eye-macro-2.png",
-    title: "Eye, Unfocused",
-    description: "Degraded tape, macro detail",
-    meta: "REC ● 00:22:39",
+    src: "/framed-gallery/statue-face-2.png",
+    title: "Marble Face II",
+    description: "Fractured bust, low light",
+    meta: "REC ● 00:26:33",
+  },
+  {
+    src: "/framed-gallery/statue-hall.png",
+    title: "Statuary Hall",
+    description: "Sculpture corridor, unsteady pass",
+    meta: "REC ● 00:44:15",
+  },
+  {
+    src: "/framed-gallery/statue-corridor-1.png",
+    title: "Gallery Row",
+    description: "Figures along a marble corridor",
+    meta: "REC ● 00:52:02",
+  },
+  {
+    src: "/framed-gallery/statue-face-3.png",
+    title: "Marble Face III",
+    description: "Split light, corroded surface",
+    meta: "REC ● 01:03:41",
+  },
+  {
+    src: "/framed-gallery/statue-face-4.png",
+    title: "Marble Face IV",
+    description: "Cracked stone, extreme detail",
+    meta: "REC ● 01:14:59",
+  },
+  {
+    src: "/framed-gallery/statue-bust-1.png",
+    title: "Fixed Gaze",
+    description: "Bust, signal breaking up",
+    meta: "REC ● 01:22:16",
+  },
+  {
+    src: "/framed-gallery/statue-profile-1.png",
+    title: "Profile Study",
+    description: "Weathered head, dim interior",
+    meta: "REC ● 01:35:04",
+  },
+  {
+    src: "/framed-gallery/statue-feet.png",
+    title: "Pedestal Detail",
+    description: "Inscribed base, low frame",
+    meta: "REC ● 01:41:27",
+  },
+  {
+    src: "/framed-gallery/statue-silhouette-1.png",
+    title: "Doorway I",
+    description: "Backlit figure, signal tear",
+    meta: "REC ● 01:52:38",
+  },
+  {
+    src: "/framed-gallery/statue-silhouette-2.png",
+    title: "Doorway II",
+    description: "Backlit figure, wet floor reflection",
+    meta: "REC ● 02:03:50",
+  },
+  {
+    src: "/framed-gallery/statue-silhouette-3.png",
+    title: "Doorway III",
+    description: "Backlit figure, motion smear",
+    meta: "REC ● 02:14:22",
+  },
+  {
+    src: "/framed-gallery/statue-reflection-1.png",
+    title: "Standing Water",
+    description: "Figure and reflection, corridor end",
+    meta: "REC ● 02:25:09",
+  },
+  {
+    src: "/framed-gallery/statue-reflection-2.png",
+    title: "Gallery Floor",
+    description: "Figure reflected, dim room",
+    meta: "REC ● 02:33:47",
+  },
+  {
+    src: "/framed-gallery/statue-seated.png",
+    title: "Seated Figure",
+    description: "Seated bust, glitching light",
+    meta: "REC ● 02:44:12",
+  },
+  {
+    src: "/framed-gallery/statue-lowangle-1.png",
+    title: "Looking Up I",
+    description: "Low angle, arms raised, overexposed",
+    meta: "REC ● 02:52:30",
+  },
+  {
+    src: "/framed-gallery/statue-lowangle-2.png",
+    title: "Looking Up II",
+    description: "Low angle face, domed ceiling",
+    meta: "REC ● 03:01:18",
+  },
+  {
+    src: "/framed-gallery/statue-row-1.png",
+    title: "Four Faces",
+    description: "Row of busts, color bleed",
+    meta: "REC ● 03:12:44",
+  },
+  {
+    src: "/framed-gallery/statue-row-2.png",
+    title: "Two Profiles",
+    description: "Facing busts, motion streak",
+    meta: "REC ● 03:20:56",
+  },
+  {
+    src: "/framed-gallery/statue-row-3.png",
+    title: "Receding Line",
+    description: "Busts in profile, warm and cool split",
+    meta: "REC ● 03:31:09",
+  },
+  {
+    src: "/framed-gallery/statue-face-5.png",
+    title: "Marble Face V",
+    description: "Close detail, heavy grain",
+    meta: "REC ● 03:42:25",
   },
 ];
 
@@ -90,7 +204,7 @@ const TRACK_JITTER_SMOOTH = 0.045;   // low-pass factor easing the speed multipl
                                       // random target each frame — a real tape doesn't scroll at
                                       // a perfectly constant rate, it wavers unevenly
 const TRACK_JITTER_AMOUNT = 0.7;     // +/- fraction of speed the wobble can swing
-const MAX_TRACK_SHIFT_PX = 14;       // px, peak horizontal displacement at full obscurity
+const MAX_TRACK_SHIFT_PX = 24;       // px, peak horizontal displacement at full obscurity
 
 // The mesh is built larger than the card itself so the CRT glow (below)
 // has room to bleed outward into the room before getting cut off at the
@@ -166,30 +280,50 @@ const fragmentShader = /* glsl */`
     // length rather than a flat sideways shove.
     float wavePos = (uv.y + uTrackPhase) * 5.0;
     float bandMask = pow(abs(sin(wavePos)), 4.0);
-    float squiggle = sin(uv.y * 60.0 + uTrackPhase * 30.0) * 0.6
-                    + sin(uv.y * 130.0 - uTrackPhase * 48.0) * 0.4;
+    // Low frequencies only — this is what keeps it a smooth, broad,
+    // continuous curve rather than a tight mechanical zigzag. (A much
+    // higher-frequency version of this existed earlier and reads as a
+    // repeating sawtooth/herringbone texture instead of an analog wave.)
+    // Three layers rather than two, still all low frequency, for a bit
+    // more shape in the curve without reintroducing that busy texture.
+    float squiggle = sin(uv.y * 7.0 + uTrackPhase * 12.0) * 0.5
+                    + sin(uv.y * 2.6 - uTrackPhase * 5.5) * 0.4
+                    + sin(uv.y * 13.0 + uTrackPhase * 18.0) * 0.25;
     // A little fine, flickering noise riding on top of the broad wave —
-    // real tracking noise isn't a perfectly clean sine, it has texture.
-    float squiggleNoise = (hash21(vec2(uv.y * 300.0, uTrackPhase * 900.0)) - 0.5) * 0.35;
+    // real tracking noise isn't a perfectly clean sine, it has texture —
+    // kept small so it reads as grain on the curve, not its own pattern.
+    float squiggleNoise = (hash21(vec2(uv.y * 300.0, uTrackPhase * 900.0)) - 0.5) * 0.12;
     uv.x += uT * MAX_SHIFT_U * bandMask * (squiggle + squiggleNoise);
 
-    // --- Pixel-block glitches — wide, thin rectangular bars nudged
-    // sideways, like a digital-era compression artifact bleeding into
-    // the analog picture. Explicitly excluded from wherever the squiggle
-    // band is active (the (1.0 - bandMask) term, with a hard step so
-    // there's no partial overlap at the edges) — kept as a clearly
-    // separate phenomenon happening elsewhere on the card, not tangled
-    // into the squiggle itself. Blocks are chosen from a coarse grid and
-    // held for a few frames at a time (quantizing uTrackPhase) rather
-    // than reshuffling every frame, so a glitched block reads as a
-    // discrete event, not high-frequency noise.
-    vec2 blockId = floor(pxPos / vec2(30.0, 6.0));
-    float blockStep = floor(uTrackPhase * 10.0);
-    float blockRand = hash21(blockId + blockStep * 17.0);
+    // --- Pixel-block glitches — rectangular blocks that flicker in and
+    // out at a slow, irregular pace, like a real analog CRT briefly
+    // losing sync on one patch of the screen. Block width varies per row
+    // (some rows get short blocks, some get long ones) rather than a
+    // single fixed grid, which reads as more organic. Two layers of
+    // randomness: which blocks are eligible this "cycle" (held for a
+    // while via blockCycle), and the flicker itself — a slower on/off
+    // toggle re-rolled every so often, long intervals rather than a fast
+    // strobe. Explicitly excluded from wherever the squiggle band is
+    // active (awayFromBand) so the two effects stay visually distinct.
+    float rowId = floor(pxPos.y / 14.0);
+    float blockW = mix(24.0, 78.0, step(0.6, hash21(vec2(rowId, 99.0))));
+    vec2 blockId = vec2(floor(pxPos.x / blockW), rowId);
     float awayFromBand = step(bandMask, 0.35);
-    float blockActive = step(0.92, blockRand) * uT * awayFromBand;
-    vec2 blockJitter = (vec2(hash21(blockId * 1.7 + 1.0), hash21(blockId * 2.3 + 2.0)) - 0.5) * 0.04;
+
+    float blockCycle = floor(uTrackPhase * 9.0);
+    float eligible = step(0.86, hash21(blockId + blockCycle * 13.0));
+
+    float flickerFrame = floor(uTrackPhase * 70.0);
+    float flicker = step(0.45, hash21(blockId + flickerFrame * 7.0));
+
+    float blockActive = eligible * flicker * uT * awayFromBand;
+
+    vec2 blockJitter = (vec2(hash21(blockId * 1.7 + 1.0), hash21(blockId * 2.3 + 2.0)) - 0.5) * 0.06;
     uv += blockJitter * blockActive;
+
+    // A subtle brightness tick while a block is flickering on — enough
+    // to read as "something changed here" without flashing.
+    float blockShade = 1.0 + blockActive * 0.22;
 
     // --- Convergence error / chromatic aberration — worse near the
     // edges, like a real misaligned tube, not uniform across the image,
@@ -224,6 +358,8 @@ const fragmentShader = /* glsl */`
     // where the warp is visible.
     vec3 fringe = photo - vec3(lum);
     color += fringe * bandMask * uT * 3.4;
+
+    color *= blockShade;
 
     // --- Structural: scanlines, phosphor RGB mask, vignette, grain —
     // tube properties, always present, not tied to distance from focus,
