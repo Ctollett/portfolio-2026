@@ -277,8 +277,14 @@ export function CardCarousel({
     const totalH   = cards.length * sectionH * loops;
     const midScroll = Math.floor(loops / 2) * cards.length * sectionH;
 
-    if (scrollRef.current) scrollRef.current.style.minHeight = `${vh + totalH}px`;
-    window.scrollTo(0, midScroll);
+    // Deferred one tick: scrollRef points at an ancestor div, whose own ref
+    // hasn't been attached yet at this point in React's commit (it completes
+    // after this descendant effect runs). queueMicrotask runs once that
+    // commit has fully finished, so scrollRef.current is guaranteed set.
+    queueMicrotask(() => {
+      if (scrollRef.current) scrollRef.current.style.minHeight = `${vh + totalH}px`;
+      window.scrollTo(0, midScroll);
+    });
 
     async function init() {
       const [{ default: Lenis }, THREE] = await Promise.all([
